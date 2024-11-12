@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setCredential } from '../redux/authReducer'
 import { useNavigate } from 'react-router-dom'
+import { users } from '../sampleData/users'
+import { toast } from 'react-toastify'
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -11,7 +13,12 @@ const Login = () => {
     const navigate = useNavigate()
     const submitHandler = (e) => {
         e.preventDefault();
-        dispatch(setCredential({email, password}))
+        const user = users.find(user => user.email === email && user.password === password);
+        if (!user) {
+            toast.error('Invalid email or password');
+            return;
+        }
+        dispatch(setCredential(user))
         navigate('/')
     }
   return (

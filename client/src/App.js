@@ -9,6 +9,9 @@ import { Provider } from 'react-redux';
 import store from './store';
 import Dashboard from './pages/Dashboard';
 import ThemeToggle from './components/ThemeToggle';
+import EditUsers from './pages/admin/EditUsers';
+import Profile from './pages/Profile';
+import Calendar from './pages/Calendar';
 function App() {
   const { userInfo } = useSelector((state) => state.authReducer)
   const isLoggedIn = userInfo !== null;
@@ -21,6 +24,9 @@ function App() {
         <Route path='/login' element={isLoggedIn ? <Home /> : <Login />} />
         <Route path='/register' element={isLoggedIn ? <Home /> : <Register />} />
         <Route path='/dashboard' element={isLoggedIn ? <Dashboard /> : <Login />} />
+        <Route path='/users' element={<EditUsers />} />
+        <Route path='/profile/:id' element={<Profile />} />
+        <Route path='/calendar' element={<Calendar />} />
       </Routes>
       <ToastContainer />
     </div>

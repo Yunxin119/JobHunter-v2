@@ -69,3 +69,11 @@ body {
 .label-text {
 	@apply text-gray-800 dark:text-gray-300;
 }
+
+.sec-label-text {
+	@apply text-gray-600 dark:text-gray-400;
+}
+
+.blur-window {
+	@apply bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-20 bg-gray-200 dark:bg-gray-800 dark:bg-opacity-50;
+}
