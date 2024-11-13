@@ -9,6 +9,10 @@ const companySlice = createSlice({
     name: 'company',
     initialState,
     reducers: {
+        // temp reducer without backend
+        getCompanies: (state) => {
+            return state.companies;
+        },
         setCompanies: (state, action) => {
             state.companies = action.payload;
         },
@@ -27,5 +31,5 @@ const companySlice = createSlice({
     }
 });
 
-export const { setCompanies, addCompany, updateCompany, deleteCompany } = companySlice.actions;
+export const { getCompanies, setCompanies, addCompany, updateCompany, deleteCompany } = companySlice.actions;
 export default companySlice.reducer;

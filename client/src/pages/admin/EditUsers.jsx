@@ -18,7 +18,7 @@ const EditUsers = () => {
     }
     
   return (
-    <div className='w-screen h-screen overflow-y-scroll overflow-x-hidden dark:bg-gray-800 dark:bg-opacity-15 bg-gray-200 bg-opacity-15'>
+    <div className='screen'>
         <Navbar/>
         <div className='rounded-xl relative w-2/3 top-[5%] left-1/2 -translate-x-1/2 p-5 blur-window'>
             <ul role="list" className="divide-y divide-gray-100">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { deleteCompany } from '../redux/companyReducer';
+import { deleteCompany } from '../../redux/companyReducer';
 import { FaXmark } from "react-icons/fa6";
 import EditCompany from './EditCompany';
 const SingleCompany = ({ company }) => {
@@ -20,6 +20,10 @@ const SingleCompany = ({ company }) => {
         dispatch(deleteCompany(company.id));
         toast.success("Company deleted successfully");
     };
+
+    const formatDate = (date) => {
+        return new Date(date).toISOString().split('T')[0];
+    }
 
     return (
         <>
@@ -67,7 +71,7 @@ const SingleCompany = ({ company }) => {
                     </div>
                     <div className='flex flex-row justify-between'>
                             <dt className='sec-text text-sm'>Updated At:</dt>
-                            <dd className="text-sm  prime-text">{company.updatedAt}</dd>
+                            <dd className="text-sm  prime-text">{formatDate(company.updatedAt)}</dd>
                         </div>
                 </dl>
             </div>

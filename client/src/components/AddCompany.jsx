@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { addCompany } from '../redux/companyReducer';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { FaPlus } from 'react-icons/fa6';
 
@@ -16,6 +16,7 @@ const AddCompany = () => {
     const [applyDate, setApplyDate] = useState('');
 
     // MARK: Dispatch
+    const { userInfo } = useSelector((state) => state.authReducer)
     const dispatch = useDispatch();
     const handleAdd = (e) => {
         e.preventDefault();
@@ -33,9 +34,13 @@ const AddCompany = () => {
                 imageDomain,
                 applyDate,
                 updatedAt: new Date().toISOString(),
+                user: userInfo._id,
             };
-            dispatch(addCompany(newCompany));
-            setIsOpen(false);
+            if (newCompany) {
+                dispatch(addCompany(newCompany));
+                setIsOpen(false);
+            }
+
         } catch (error) {
             console.error(error);
         }

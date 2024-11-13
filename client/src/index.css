@@ -16,6 +16,10 @@ body {
 	background-position: center;
 }
 
+.screen {
+	@apply w-screen h-screen overflow-y-scroll overflow-x-hidden dark:bg-gray-800 dark:bg-opacity-15 bg-gray-200 bg-opacity-15;
+}
+
 .company-card {
 	@apply relative overflow-hidden bg-gray-300 bg-opacity-30 hover:bg-opacity-60 shadow-sm rounded-lg p-3;
 }

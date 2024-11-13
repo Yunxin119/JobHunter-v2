@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { MdEdit } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
-import { updateCompany } from '../redux/companyReducer'
+import { updateCompany } from '../../redux/companyReducer'
 import { toast } from 'react-toastify'
 const EditCompany = ({company}) => {
     // MARK: State

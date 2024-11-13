@@ -13,3 +13,6 @@
 
 4. **PUT /profile/:id**
    - **PRIVATE**: Update the authenticated user’s profile information.
+
+5. **GET /profile/:id**
+   - **PRIVATE**

@@ -1,10 +1,10 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
-import CompanyGrid from '../components/CompanyGrid'
+import CompanyGrid from '../components/dashboard/CompanyGrid'
 
 const Dashboard = () => {
   return (
-    <div className='w-screen h-screen overflow-y-scroll overflow-x-hidden'>
+    <div className='screen'>
         <Navbar />
         <CompanyGrid />
     </div>

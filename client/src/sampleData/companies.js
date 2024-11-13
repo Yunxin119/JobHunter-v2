@@ -9,7 +9,8 @@ export const companies = [
         applyDate: "9/4/2024",
         status: "Rejected",
         updatedAt: "2024-09-09 19:34:01.903882",
-        imageDomain: "sentry.com"
+        imageDomain: "sentry.com",
+        user: 1
     },
     {
         id: 2,
@@ -21,7 +22,8 @@ export const companies = [
         applyDate: "9/4/2024",
         status: "Rejected",
         updatedAt: "2024-09-10 20:25:37.680914",
-        imageDomain: "Qorvo.com"
+        imageDomain: "Qorvo.com",
+        user: 1
     },
     {
         id: 3,
@@ -33,7 +35,8 @@ export const companies = [
         applyDate: "9/4/2024",
         status: "Rejected",
         updatedAt: "2024-09-06 19:34:23.897726",
-        imageDomain: "roblox.com"
+        imageDomain: "roblox.com",
+        user: 1
     },
     {
         id: 4,
@@ -45,7 +48,8 @@ export const companies = [
         applyDate: "9/4/2024",
         status: "Submitted",
         updatedAt: "2024-09-04 00:00:00.000000",
-        imageDomain: "verkada.com"
+        imageDomain: "verkada.com",
+        user: 1
     },
     {
         id: 5,
@@ -57,7 +61,8 @@ export const companies = [
         applyDate: "9/4/2024",
         status: "Submitted",
         updatedAt: "2024-09-04 00:00:00.000000",
-        imageDomain: "ziphq.com"
+        imageDomain: "ziphq.com",
+        user: 2
     },
     {
         id: 6,
@@ -69,7 +74,8 @@ export const companies = [
         applyDate: "9/4/2024",
         status: "Submitted",
         updatedAt: "2024-09-04 00:00:00.000000",
-        imageDomain: "berkleyalternativemarkets.tech"
+        imageDomain: "berkleyalternativemarkets.tech",
+        user: 1
     },
     {
         id: 7,
@@ -93,7 +99,8 @@ export const companies = [
         applyDate: "9/4/2024",
         status: "Rejected",
         updatedAt: "2024-09-12 18:30:56.796152",
-        imageDomain: "DIRECTV.com"
+        imageDomain: "DIRECTV.com",
+        user: 2
     },
     {
         id: 9,
@@ -105,7 +112,8 @@ export const companies = [
         applyDate: "9/4/2024",
         status: "Submitted",
         updatedAt: "2024-09-04 00:00:00.000000",
-        imageDomain: "ixl.com"
+        imageDomain: "ixl.com",
+        user: 3
     },
     {
         id: 10,
@@ -117,6 +125,7 @@ export const companies = [
         applyDate: "9/4/2024",
         status: "Submitted",
         updatedAt: "2024-09-04 00:00:00.000000",
-        imageDomain: "apple.com"
+        imageDomain: "apple.com",
+        user: 2
     }
 ];
