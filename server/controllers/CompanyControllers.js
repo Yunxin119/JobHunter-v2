@@ -7,9 +7,10 @@ import url from "url";
 // PRIVATE
 export const getCompanies = async (req, res) => {
     try {
-        const companies = await Company.find({ user_id: req.userId });
+        const companies = await Company.find({ user_id: req.user._id });
         res.json(companies);
     } catch (error) {
+        console.error("Get Companies Error:", error);
         res.status(500).json({ message: "Failed to retrieve companies, please try again :(" });
     }
 };
@@ -43,13 +44,14 @@ export const addCompany = async (req, res) => {
             applyDate,
             status,
             imageDomain,
-            // user_id: req.userId,
+            user_id: req.user._id,
             updatedAt: status === "Submitted" ? new Date(applyDate) : new Date()
         });
 
         await company.save();
         res.status(201).json(company);
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: `Failed to add this company, please try again :(` });
     }
 };
@@ -92,7 +94,7 @@ export const deleteCompany = async (req, res) => {
     try {
         const company = await Company.findById(id);
         if (!company) return res.status(404).json({ message: "Company not found :(" });
-        const newCompanies = await Company.deleteOne({ id: id });
+        await Company.deleteOne({ _id: id });
         res.json({ message: "Company deleted :)" });
     } catch (error) {
         console.error("Delete Company Error:", error);

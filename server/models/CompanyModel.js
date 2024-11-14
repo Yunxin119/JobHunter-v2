@@ -40,11 +40,11 @@ const CompanySchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    // user_id: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'User',
-    //     required: true
-    // }
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
 });
 
 // Convert to JSON-like structure
@@ -63,7 +63,7 @@ CompanySchema.methods.toJSON = function() {
         status: companyObject.status,
         updatedAt: companyObject.updatedAt ? companyObject.updatedAt.toISOString().split('T')[0] : null,
         imageDomain: companyObject.imageDomain,
-        // user_id: companyObject.user_id
+        user_id: companyObject.user_id
     };
 };
 
