@@ -10,5 +10,7 @@ export default configureStore({
         authReducer,
         companyReducer,
         tempUserReducer
-    }
+    },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(apiSlice.middleware),
 });

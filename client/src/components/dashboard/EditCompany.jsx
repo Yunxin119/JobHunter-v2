@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { MdEdit } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
 import { updateCompany } from '../../redux/companyReducer'
+import { useUpdateCompanyMutation } from '../../redux/companyApiSlice'
 import { toast } from 'react-toastify'
 const EditCompany = ({company}) => {
     // MARK: State
@@ -17,9 +18,9 @@ const EditCompany = ({company}) => {
     : '';
     const [applyDate, setApplyDate] = useState(formattedDate);
 
-    // MARK: Dispatch
-    const dispatch = useDispatch();
-    const handleEdit = (e) => {
+    // MARK: Api
+    const [updateCompany, {isLoading}] = useUpdateCompanyMutation();
+    const handleEdit = async(e) => {
         e.preventDefault();
         if (!name || !role || !status || !city || !link || !imageDomain || !applyDate) {
             toast.error('Please fill out all fields');
@@ -34,10 +35,11 @@ const EditCompany = ({company}) => {
                 city,
                 link,
                 imageDomain,
-                applyDate,
+                applyDate: formattedDate,
                 updatedAt: new Date().toISOString(),
             };
-            dispatch(updateCompany(updatedCompany));
+            await updateCompany(updatedCompany).unwrap();
+            toast.success('Company updated successfully!');
             setIsOpen(false);
         } catch (error) {
             console.error(error);

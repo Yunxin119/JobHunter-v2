@@ -1,20 +1,26 @@
 import React, {useState} from 'react'
-import { users } from '../../sampleData/users'
 import Navbar from '../../components/Navbar'
 import { MdEdit } from "react-icons/md";
 import { IoMdTrash } from "react-icons/io";
 import EditSingleUser from '../../components/EditSingleUser';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteUser } from '../../redux/tempUserReducer';
+// import { deleteUser } from '../../redux/tempUserReducer';
+import { useGetAllUsersQuery, useDeleteUserMutation } from '../../redux/userApiSlice';
+import { toast } from 'react-toastify';
 
 const EditUsers = () => {
-    const usersList = useSelector((state) => state.tempUserReducer.users)
-    const [editing, setEditing] = useState(false)
-    const dispatch = useDispatch()
-    const handleDeleteUser = (userId) => {
+    const { data: usersList, isLoading } = useGetAllUsersQuery();
+    console.log(usersList);
+    const { deleteUser, isLoading: isDeleting } = useDeleteUserMutation();
+    const handleDeleteUser = async(userId) => {
         const confirm = window.confirm('Are you sure you want to delete this user? This action cannot be undone.');
         if (!confirm) return;
-        dispatch(deleteUser(userId));
+        try {
+            await deleteUser(userId);
+            toast.success('User deleted successfully');
+        } catch (error) {
+            toast.error('Failed to delete user');
+        }
     }
     
   return (

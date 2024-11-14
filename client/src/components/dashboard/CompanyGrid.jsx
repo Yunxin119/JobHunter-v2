@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import SingleCompany from './SingleCompany';
 import { useSelector } from 'react-redux';
+import { useGetCompanyQuery } from '../../redux/companyApiSlice';
 
 const CompanyGrid = () => {
     const { userInfo } = useSelector((state) => state.authReducer);
-    const companies = useSelector(state => state.companyReducer.companies).filter(company => company.user === userInfo._id);
+    const { data: companies } = useGetCompanyQuery();
     const [isReverse, setIsReverse] = useState(false);
     const [statusFilter, setStatusFilter] = useState('All');
     const [searchInput, setSearchInput] = useState('');
-
+    const validCompanies = Array.isArray(companies) ? companies : [];
     // Valid companies after filters and sorting
-    const filteredCompanies = companies
+    const filteredCompanies = validCompanies
         .slice()
         .sort((a, b) => {
             if (a.status === 'Rejected' && b.status !== 'Rejected') return 1;

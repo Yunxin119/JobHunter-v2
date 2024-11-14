@@ -3,24 +3,29 @@ import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setCredential } from '../redux/authReducer'
 import { useNavigate } from 'react-router-dom'
-import { users } from '../sampleData/users'
+import { useLoginMutation } from '../redux/userApiSlice'
 import { toast } from 'react-toastify'
 
 const Login = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const submitHandler = (e) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [login, { isLoading, error }] = useLoginMutation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const submitHandler = async (e) => {
         e.preventDefault();
-        const user = users.find(user => user.email === email && user.password === password);
-        if (!user) {
-            toast.error('Invalid email or password');
-            return;
+        try {
+            const res = await login({ email, password }).unwrap();
+            console.log(res);
+            dispatch(setCredential(res));
+            navigate('/');
+        } catch (error) {
+            console.error("Login error:", error);
+            toast.error(error?.data?.msg || 'Failed to login');
         }
-        dispatch(setCredential(user))
-        navigate('/')
-    }
+    };
+
   return (
     <div className="flex h-screen p-4 items-center justify-center">
         <div className='flex flex-col items-center justify-center min-w-96 mx-auto'>

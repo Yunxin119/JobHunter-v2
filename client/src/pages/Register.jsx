@@ -2,16 +2,21 @@ import React, {useState, useEffect} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setCredential } from '../redux/authReducer'
+import { useRegisterMutation } from '../redux/userApiSlice'
 
 const Register = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
     const [username, setUsername] = useState('')
+    const [register, { isLoading, error }] = useRegisterMutation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
-        dispatch(setCredential({email, password, username}))
+        const res = await register({ email, password, username, confirmPassword }).unwrap();
+        console.log(res);
+        dispatch(setCredential(res));
         navigate('/')
     }
   return (
@@ -55,6 +60,17 @@ const Register = () => {
                         class="input" 
                         value={password}
                         onChange={(e)=> setPassword(e.target.value)}
+                    />
+                                        {/* Form: Password */}
+                                        <label className='label py-2'>
+                        <span>Password</span>
+                    </label>
+                    <input 
+                        type="password" 
+                        placeholder="Shh... it’s a secret" 
+                        class="input" 
+                        value={confirmPassword}
+                        onChange={(e)=> setConfirmPassword(e.target.value)}
                     />
                     {/* Form: Register direction */}
                     <div className='p-2 items-center justify-center'>

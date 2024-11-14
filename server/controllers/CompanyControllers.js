@@ -1,5 +1,6 @@
 import Company from "../models/CompanyModel.js";
 import url from "url";
+import User from "../models/UserModel.js";
 
 // @DESC: Get all companies for a specific user
 // PATH: /api/companies
@@ -7,8 +8,10 @@ import url from "url";
 // PRIVATE
 export const getCompanies = async (req, res) => {
     try {
-        const companies = await Company.find({ user_id: req.user._id });
-        res.json(companies);
+        const user = await User.findById(req.user._id).populate("applications");
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        res.json(user.applications);
     } catch (error) {
         console.error("Get Companies Error:", error);
         res.status(500).json({ message: "Failed to retrieve companies, please try again :(" });
@@ -20,7 +23,8 @@ export const getCompanies = async (req, res) => {
 // METHOD: POST
 // PRIVATE
 export const addCompany = async (req, res) => {
-    try {
+        console.log(req.body);
+        try {
         const { name, role, city, link, applyDate, status, imageDomain } = req.body;
         const parsedUrl = url.parse(imageDomain);
         const domain = parsedUrl.hostname || parsedUrl.path;
@@ -49,9 +53,14 @@ export const addCompany = async (req, res) => {
         });
 
         await company.save();
+
+        const user = await User.findById(req.user._id);
+        user.applications.push(company._id);
+        await user.save();
+
         res.status(201).json(company);
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).json({ message: `Failed to add this company, please try again :(` });
     }
 };
@@ -94,7 +103,13 @@ export const deleteCompany = async (req, res) => {
     try {
         const company = await Company.findById(id);
         if (!company) return res.status(404).json({ message: "Company not found :(" });
+
         await Company.deleteOne({ _id: id });
+
+        const user = await User.findById(req.user._id);
+        user.applications = user.applications.filter(companyId => companyId.toString() !== id);
+        await user.save();
+
         res.json({ message: "Company deleted :)" });
     } catch (error) {
         console.error("Delete Company Error:", error);

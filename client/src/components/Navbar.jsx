@@ -3,13 +3,16 @@ import { FaBars, FaXmark, FaPlus } from "react-icons/fa6";
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/authReducer';
+import { useLogoutMutation } from '../redux/userApiSlice';
 import { toast } from 'react-toastify';
 import AddCompany from './AddCompany';
 
 const Navbar = () => {
     const { userInfo } = useSelector((state) => state.authReducer)
+    const [logoutUser, {isLoading}] = useLogoutMutation();
     const dispatch = useDispatch();
-    const handleSignOut = () => {
+    const handleSignOut = async () => {
+      await logoutUser();
       dispatch(logout())
       toast.success('You have been signed out')
     }

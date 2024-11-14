@@ -3,19 +3,20 @@ import Navbar from '../components/Navbar'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import PersonalInfo from '../components/profile/PersonalInfo'
+import { useGetProfileQuery } from '../redux/userApiSlice'
 import Page404 from './Page404'
 import Stats from '../components/profile/Stats'
 
 const Profile = () => {
   const { userInfo } = useSelector((state) => state.authReducer)
   console.log(userInfo);
-  const { users } = useSelector((state) => state.tempUserReducer)
   const { id }= useParams();
-  const profileUser = users.find(user => user._id.toString() === id);
+  const { data: profileUser, isLoading, error } = useGetProfileQuery(id);
+  console.log(profileUser);
   if (!profileUser){
     return <Page404 />
   };
-  const isCurrentUser = userInfo?._id.toString() === id;
+  const isCurrentUser = userInfo?._id === id; 
   return (
     <div className='screen'>
       <Navbar />

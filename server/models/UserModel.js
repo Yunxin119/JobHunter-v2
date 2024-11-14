@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { application } from "express";
 
 const UserSchema = new mongoose.Schema({
     username: {
@@ -17,7 +18,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    companies: [{
+    applications: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company'
     }]

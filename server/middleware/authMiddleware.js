@@ -3,6 +3,7 @@ import User from '../models/UserModel.js';
 
 export const protectMiddleware = async (req, res, next) => {
     const token = req.cookies.jwt;
+    console.log('Token:', token);
 
     if (!token) {
         return res.status(401).json({ message: 'Not authorized, check login status' });

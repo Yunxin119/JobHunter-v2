@@ -2,7 +2,6 @@ import React from 'react'
 
 const Stats = ({user, isCurrentUser}) => {
     const companies = user.applications; 
-    console.log(companies);
     const validCompanies = Array.isArray(companies) ? companies : [];
     const status = validCompanies.map((company) => company.status);
     const oa = status.filter((s) => s === 'OA').length;

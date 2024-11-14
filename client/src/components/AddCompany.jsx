@@ -3,6 +3,7 @@ import { addCompany } from '../redux/companyReducer';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { FaPlus } from 'react-icons/fa6';
+import { useAddCompanyMutation } from '../redux/companyApiSlice';
 
 const AddCompany = () => {
     // MARK: State
@@ -14,11 +15,13 @@ const AddCompany = () => {
     const [link, setLink] = useState('');
     const [imageDomain, setImageDomain] = useState('');
     const [applyDate, setApplyDate] = useState('');
+    const [addCompany, {isLoading}] = useAddCompanyMutation();
+    const formattedDate = new Date(applyDate).toLocaleDateString('en-US');
 
     // MARK: Dispatch
     const { userInfo } = useSelector((state) => state.authReducer)
     const dispatch = useDispatch();
-    const handleAdd = (e) => {
+    const handleAdd = async (e) => {
         e.preventDefault();
         if (!name || !role || !status || !city || !link || !imageDomain || !applyDate) {
             toast.error('Please fill out all fields');
@@ -32,20 +35,19 @@ const AddCompany = () => {
                 city,
                 link,
                 imageDomain,
-                applyDate,
+                applyDate: formattedDate,
                 updatedAt: new Date().toISOString(),
                 user: userInfo._id,
             };
-            if (newCompany) {
-                dispatch(addCompany(newCompany));
-                setIsOpen(false);
-            }
-
+    
+            const res = await addCompany(newCompany).unwrap();
+            setIsOpen(false);
+            toast.success('Company added successfully!');
         } catch (error) {
-            console.error(error);
+            console.log(error);
+            toast.error(error?.data?.msg || 'Failed to add company');
         }
-
-    }
+    };
 return (
     <div>
         {/* Add Button */}

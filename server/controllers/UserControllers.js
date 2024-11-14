@@ -35,11 +35,13 @@ export const register = async (req, res) => {
 
         await newUser.save();
 
-        const accessToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "30m" });
+        const token = generateTokenAndCookie(newUser._id, res);
         res.status(201).json({
             username: newUser.username,
             email: newUser.email,
-            token: accessToken
+            _id: newUser._id,
+            role: newUser.role,
+            token
         });
     } catch (error) {
         res.status(400).json({ msg: error.message });
@@ -57,8 +59,9 @@ export const login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.passwordHash);
         if (!isMatch) return res.status(401).json({ msg: "Invalid email or password" });
 
-        generateTokenAndCookie(user._id, res);
-        res.status(200).json({ username: user.username, email: user.email });
+        const token = generateTokenAndCookie(user._id, res);
+        console.log("User logged in");
+        res.status(200).json({ username: user.username, email: user.email, _id: user._id, role: user.role, applications: user.applications, token });
     } catch (error) {
         res.status(500).json({ msg: error.message });
     }
@@ -76,11 +79,12 @@ export const logout = async (req, res) => {
 
 // Get user profile
 export const getUserProfile = async (req, res) => {
+    const { id } = req.params;
     try {
-        const user = await User.findById(req.userId);
+        const user = await User.findById(id);
         if (!user) return res.status(404).json({ msg: "User not found" });
-
-        res.status(200).json(user.toJSON());
+        console.log("User profile retrieved");
+        res.status(200).json({ username: user.username, email: user.email, _id: user._id, role: user.role, applications: user.applications });
     } catch (error) {
         res.status(500).json({ msg: "Failed to retrieve user profile" });
     }
@@ -88,8 +92,10 @@ export const getUserProfile = async (req, res) => {
 
 // Edit user profile
 export const editProfile = async (req, res) => {
+    const { id } = req.params;
     try {
-        const user = await User.findById(req.userId);
+        const user = await User.findById(id);
+        console.log(user);
         if (!user) return res.status(404).json({ msg: "User not found" });
 
         const { username, email, password, confirmPassword } = req.body;
@@ -106,12 +112,23 @@ export const editProfile = async (req, res) => {
 
         await user.save();
 
-        generateTokenAndCookie(user._id, res);
-        res.status(200).json({
-            username: user.username,
-            email: user.email
-        });
+        const token = generateTokenAndCookie(user._id, res);
+        res.status(200).json({ _id: user._id, username: user.username, email: user.email, _id: user._id, role: user.role, applications: user.applications, token });
     } catch (error) {
         res.status(400).json({ msg: error.message });
+        console.log(error);
+    }
+};
+
+export const deleteUser = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ msg: "User not found" });
+
+        await User.deleteOne({ _id: id });
+        res.status(200).json({ msg: "User deleted" });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
     }
 };

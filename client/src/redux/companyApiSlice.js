@@ -3,14 +3,14 @@ import { apiSlice } from './apiSlice';
 
 export const companyApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getCompany: () => builder.query({
+        getCompany: builder.query({
             query: () => ({
                 url: COMPANY_URL,
             }),
             providesTags: ['Company'],
             keepUnusedDataFor: 5,
         }),
-        addCompany: (body) => builder.mutation({
+        addCompany:builder.mutation({
             query: (body) => ({
                 url: COMPANY_URL + '/add',
                 method: 'POST',
@@ -18,7 +18,7 @@ export const companyApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Company']
         }),
-        updateCompany: (body) => builder.mutation({
+        updateCompany: builder.mutation({
             query: (body) => ({
                 url: COMPANY_URL + '/'+body.id,
                 method: 'PUT',
@@ -26,7 +26,7 @@ export const companyApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Company']
         }),
-        deleteCompany: (id) => builder.mutation({
+        deleteCompany: builder.mutation({
             query: (id) => ({
                 url: COMPANY_URL + '/'+id,
                 method: 'DELETE'

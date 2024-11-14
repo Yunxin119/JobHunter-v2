@@ -1,5 +1,6 @@
 import { USERS_URL } from '../config';
 import { apiSlice } from './apiSlice';
+import { deleteUser } from './tempUserReducer';
 
 export const userApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -25,18 +26,17 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 method: 'POST'
             }),
             invalidatesTags: ['User'],
-            onQueryStarted: () => logout()
         }),
         getProfile: builder.query({
             query: (id) => ({
-                url: USERS_URL + '/profile/' + id,
+                url: USERS_URL + '/' + id,
             }),
             providesTags: ['User'],
             keepUnusedDataFor: 5,
         }),
         updateProfile: builder.mutation({
             query: (body) => ({
-                url: USERS_URL + '/profile/'+ body.id,
+                url: USERS_URL + '/'+ body.id,
                 method: 'PUT',
                 body
             }),
@@ -44,11 +44,25 @@ export const userApiSlice = apiSlice.injectEndpoints({
         }),
         getAllUsers: builder.query({
             query: () => ({
-                url: USERS_URL + '/all',
+                url: USERS_URL,
             }),
             providesTags: ['User'],
             keepUnusedDataFor: 5,
         }),
+        getUserProfile: builder.query({
+            query: (id) => ({
+                url: USERS_URL + '/'+id,
+            }),
+            providesTags: ['User'],
+            keepUnusedDataFor: 5,
+        }),
+        deleteUser: builder.mutation({
+            query: (id) => ({
+                url: USERS_URL + '/'+id,
+                method: 'DELETE'
+            }),
+            invalidatesTags: ['User']
+        })
     })
 });
 
@@ -58,6 +72,7 @@ export const {
     useLogoutMutation, 
     useGetProfileQuery, 
     useUpdateProfileMutation,
-    useGetAllUsersQuery
+    useGetAllUsersQuery,
+    useDeleteUserMutation
 } = userApiSlice;
 export default userApiSlice;

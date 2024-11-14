@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { deleteCompany } from '../../redux/companyReducer';
+import { useDeleteCompanyMutation } from '../../redux/companyApiSlice';
 import { FaXmark } from "react-icons/fa6";
 import EditCompany from './EditCompany';
 const SingleCompany = ({ company }) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const [deleteCompany, {isLoading}] = useDeleteCompanyMutation();
 
     // MARK: Label Color Settings
     const isSubmitted = company.status === 'Submitted';
@@ -14,11 +16,16 @@ const SingleCompany = ({ company }) => {
     const isInProgress = company.status !== 'Submitted' && company.status !== 'Rejected';
     const statusColor = isSubmitted ? 'bg-green-50 text-green-700' : isRejected ? 'bg-red-50 text-red-700' : 'bg-yellow-50 text-yellow-700';
 
-    const handleDelete = () => {
+    const handleDelete = async() => {
         const confirm = window.confirm('Are you sure you want to delete this company? This action cannot be undone.');
         if (!confirm) return;
-        dispatch(deleteCompany(company.id));
-        toast.success("Company deleted successfully");
+        try {
+            await deleteCompany(company.id).unwrap();
+            toast.success("Company deleted successfully");
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to delete company');
+        }
     };
 
     const formatDate = (date) => {

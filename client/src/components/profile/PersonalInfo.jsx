@@ -1,159 +1,119 @@
 import { MdEdit } from 'react-icons/md';
-import { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../redux/tempUserReducer';
+import { useUpdateProfileMutation } from '../../redux/userApiSlice';
+import { toast } from 'react-toastify';
+import { setCredential } from '../../redux/authReducer';
+
 export default function PersonalInfo({ isCurrentUser, user }) {
     const dispatch = useDispatch();
+    const [updateProfile, { isLoading }] = useUpdateProfileMutation();
     const [username, setUsername] = useState(user.username);
     const [email, setEmail] = useState(user.email);
-    const [password, setPassword] = useState(user.password);
-    const [editName, setEditName] = useState(false);
-    const handleEditUsername = () => {
-        if (!username) {
-            return;
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [editProfile, setEditProfile] = useState(false);
+
+    const handleEditProfile = async () => {
+        if (!editProfile) {
+            setEditProfile(true);
+        } else {
+            if (password !== confirmPassword) {
+                toast.error('Passwords do not match');
+                return;
+            }
+            try {
+                const res = await updateProfile({ id: user._id, username, email, password, confirmPassword }).unwrap();
+                toast.success('Profile updated');
+                setEditProfile(false);
+                dispatch(setCredential(res));
+            } catch (error) {
+                toast.error('Failed to update profile');
+                console.error('Error updating profile:', error);
+            }
         }
-        dispatch(updateUser({ ...user, username: username }));
-        setEditName(false);
-    }
-    const [editEmail, setEditEmail] = useState(false);
-    const handleEditEmail = () => {
-        if (!email) {
-            return;
-        }
-        dispatch(updateUser({ ...user, email: email }));
-        setEditEmail(false);
-    }
-    const [editPassword, setEditPassword] = useState(false);
-    const handleEditPassword = () => {
-        if (!password) {
-            return;
-        }
-        dispatch(updateUser({ ...user, password: password }));
-        setEditPassword(false);
-    }
-  return (
-  <div className="w-[60%] shadow sm:rounded-lg">
-        <div className="px-4 py-6 sm:px-6">
-        <h3 className="text-base/7 font-semibold text-gray-900">User Information</h3>
-        <p className="mt-1 max-w-2xl text-sm/6 text-gray-500">Personal details and application stats.</p>
-        </div>
-        <div className="border-t border-gray-100">
-            <dl className="divide-y divide-gray-100">
-                <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">Username</dt>
-                    { !editName ? (
-                        <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{user.username}</dd>
-                    ) : 
-                    ( 
-                        <input className="form-control mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0" defaultValue={username} placeholder="Module Name"
-                        onChange={(e) => setUsername(e.target.value)}/>
-                    )}
-                    {isCurrentUser && (
-                        !editName ? (
-                            <dd className="text-right sm:col-span-1">
-                                <button
-                                    type="button"
-                                    className="rounded-md font-sm text-indigo-600 hover:text-indigo-500"
-                                    onClick={() => setEditName(true)}
-                                >
-                                    <MdEdit />
-                                </button>
-                            </dd>
-                        ) : (
-                            <dd className="text-right sm:col-span-1">
-                                <button
-                                    type="button"
-                                    className="rounded-md font-sm text-indigo-600 hover:text-indigo-500"
-                                    onClick={handleEditUsername}
-                                >
-                                    <FaCheck />
-                                </button>
-                            </dd>
-                        )
-                    )}
+    };
+
+    return (
+        <div className="w-[60%] shadow sm:rounded-lg">
+            <div className="px-4 py-6 sm:px-6">
+                <div className="flex flex-row items-center justify-between">
+                    <h3 className="text-base font-semibold text-gray-900">User Information</h3>
+                    <button
+                        type="button"
+                        className={`rounded-md text-sm ${!editProfile ? 'text-blue-500 hover:text-blue-400' : 'text-gray-500 hover:text-gray-400'}`}
+                        onClick={handleEditProfile}
+                    >
+                        {editProfile ? <FaCheck /> : <MdEdit />}
+                    </button>
                 </div>
-                <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">Email address</dt>
-                    { !editEmail ? (
-                        <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{user.email}</dd>
-                    ) : 
-                    ( 
-                        <input className="form-control mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0" defaultValue={email} placeholder="Module Name"
-                        onChange={(e) => setEmail(e.target.value)}/>
-                    )}
-                    
-                    {isCurrentUser && (
-                        !editEmail ? (
-                            <dd className="text-right sm:col-span-1">
-                                <button
-                                    type="button"
-                                    className="rounded-md font-sm text-indigo-600 hover:text-indigo-500"
-                                    onClick={() => setEditEmail(true)}
-                                >
-                                    <MdEdit />
-                                </button>
-                            </dd>
-                        ) : (
-                            <dd className="text-right sm:col-span-1">
-                                <button
-                                    type="button"
-                                    className="rounded-md font-sm text-indigo-600 hover:text-indigo-500"
-                                    onClick={handleEditEmail}
-                                >
-                                    <FaCheck />
-                                </button>
-                            </dd>
-                        )
-                    )}
-                </div>
-                { isCurrentUser && (
+                <p className="mt-1 max-w-2xl text-sm/6 text-gray-500">Personal details and application stats.</p>
+            </div>
+            <div className="border-t border-gray-100">
+                <dl className="divide-y divide-gray-100">
                     <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">Password</dt>
-                        { !editPassword ? (
-                            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">**********</dd>
-                        ) : 
-                        ( 
-                            <input className="form-control mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0" defaultValue={password} placeholder="Module Name"
-                            onChange={(e) => setPassword(e.target.value)}/>
-                        )}
-                        { !editPassword ? (
-                            <dd className="text-right sm:col-span-1">
-                                <button 
-                                type="button" 
-                                className="rounded-md font-sm text-indigo-600 hover:text-indigo-500"
-                                onClick={() => setEditPassword(true)}
-                                >
-                                    <MdEdit />
-                                </button>
-                            </dd>
-                        ) : (
-                            <dd className="text-right sm:col-span-1">
-                                <button type="button" 
-                                    onClick={handleEditPassword}
-                                    className="rounded-md font-sm text-indigo-600 hover:text-indigo-500"
-                                >
-                                    <FaCheck />
-                                </button>
-                            </dd>
-                        )}
-                    </div>
-                )}
-                <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-900">About</dt>
-                    <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                        {user.about || 'No information provided'}
-                    </dd>
-                    {isCurrentUser && (
-                        <dd className="text-right sm:col-span-1">
-                            <button type="button" className="rounded-md font-sm text-indigo-600 hover:text-indigo-500">
-                                <MdEdit />
-                            </button>
+                        <dt className="text-sm font-medium text-gray-900">Username</dt>
+                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                            {editProfile ? (
+                                <input
+                                    className="form-control profile-input"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                            ) : (
+                                user.username
+                            )}
                         </dd>
+                    </div>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-900">Email address</dt>
+                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                            {editProfile ? (
+                                <input
+                                    className="form-control profile-input"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            ) : (
+                                user.email
+                            )}
+                        </dd>
+                    </div>
+                    {isCurrentUser && (
+                        <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-900">Password</dt>
+                            <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 flex">
+                                {editProfile ? (
+                                    <div className='flex flex-col gap-2'>
+                                        <input
+                                            className="form-control profile-input border-[1px] border-white"
+                                            type="password"
+                                            placeholder="New Password"
+                                            onChange={(e) => setPassword(e.target.value)}
+                                        />
+                                        <input
+                                            className="form-control profile-input border-[1px] border-white"
+                                            type="password"
+                                            placeholder="Confirm Password"
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                        />
+                                    </div>
+                                ) : (
+                                    '**********'
+                                )}
+                            </dd>
+                        </div>
                     )}
-                </div>
-            </dl>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-900">About</dt>
+                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                            {user.about || 'No information provided'}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
         </div>
-    </div>
-  )
+    );
 }
