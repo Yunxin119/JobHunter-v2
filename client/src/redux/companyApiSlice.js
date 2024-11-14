@@ -20,7 +20,7 @@ export const companyApiSlice = apiSlice.injectEndpoints({
         }),
         updateCompany: (body) => builder.mutation({
             query: (body) => ({
-                url: COMPANY_URL + '/update/'+body.id,
+                url: COMPANY_URL + '/'+body.id,
                 method: 'PUT',
                 body
             }),
@@ -28,7 +28,7 @@ export const companyApiSlice = apiSlice.injectEndpoints({
         }),
         deleteCompany: (id) => builder.mutation({
             query: (id) => ({
-                url: COMPANY_URL + '/delete/'+id,
+                url: COMPANY_URL + '/'+id,
                 method: 'DELETE'
             }),
             invalidatesTags: ['Company']
