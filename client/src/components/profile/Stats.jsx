@@ -11,7 +11,7 @@ const Stats = ({user, isCurrentUser}) => {
   return (
     <>
       <div className='h-full w-1/2 rounded-md flex flex-col items-center justify-between'>
-        <div className='text-2xl md:text-3xl text-gray-200 font-bold mb-3'>Img</div>
+        <img src={user.profilePic} alt="" className='h-32 w-32 rounded-full mb-4'/>
         <div className='flex flex-col items-center justify-center w-full'>
         {isCurrentUser ? (
           <>

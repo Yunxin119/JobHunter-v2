@@ -18,6 +18,15 @@ const UserSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    gender: {
+        type: String,
+        required: true,
+        enum: ["male", "female", "other"]
+    },
+    profilePic: {
+        type: String,
+        default: ""
+    },
     applications: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company'
