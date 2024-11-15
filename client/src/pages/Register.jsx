@@ -9,12 +9,13 @@ const Register = () => {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [username, setUsername] = useState('')
+    const [gender, setGender] = useState('')
     const [register, { isLoading, error }] = useRegisterMutation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const submitHandler = async (e) => {
         e.preventDefault();
-        const res = await register({ email, password, username, confirmPassword }).unwrap();
+        const res = await register({ email, password, username, confirmPassword, gender }).unwrap();
         console.log(res);
         dispatch(setCredential(res));
         navigate('/')
@@ -61,9 +62,9 @@ const Register = () => {
                         value={password}
                         onChange={(e)=> setPassword(e.target.value)}
                     />
-                                        {/* Form: Password */}
-                                        <label className='label py-2'>
-                        <span>Password</span>
+                    {/* Form: Password */}
+                    <label className='label py-2'>
+                        <span>Confirm Password</span>
                     </label>
                     <input 
                         type="password" 
@@ -72,6 +73,21 @@ const Register = () => {
                         value={confirmPassword}
                         onChange={(e)=> setConfirmPassword(e.target.value)}
                     />
+                    {/* Form: Gender */}
+                    <label className='label py-2'>
+                        <span>Gender</span>
+                    </label>
+                    <select
+                        className="input"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        required
+                    >
+                        <option value="" disabled>Select Gender</option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="other">Do not wish to answer</option>
+                    </select>
                     {/* Form: Register direction */}
                     <div className='p-2 items-center justify-center'>
                         <Link to='/login' className='text-blue-400 hover:text-blue-700'>

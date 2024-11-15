@@ -13,6 +13,7 @@ export default function PersonalInfo({ isCurrentUser, user }) {
     const [username, setUsername] = useState(user.username);
     const [email, setEmail] = useState(user.email);
     const [password, setPassword] = useState('');
+    const [gender, setGender] = useState(user.gender);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [editProfile, setEditProfile] = useState(false);
 
@@ -25,7 +26,7 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                 return;
             }
             try {
-                const res = await updateProfile({ id: user._id, username, email, password, confirmPassword }).unwrap();
+                const res = await updateProfile({ id: user._id, username, email, password, confirmPassword, gender }).unwrap();
                 toast.success('Profile updated');
                 setEditProfile(false);
                 dispatch(setCredential(res));
@@ -78,6 +79,27 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                                 />
                             ) : (
                                 user.email
+                            )}
+                        </dd>
+                    </div>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
+                        <dt className="label-text">Gender</dt>
+                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                            {editProfile ? (
+                                <select
+                                    className="form-control profile-input"
+                                    value={gender}
+                                    onChange={(e) => {
+                                        setGender(e.target.value);
+                                        console.log(e.target.value); // Debugging: Ensure the correct value is being logged
+                                    }}
+                                >
+                                    <option value="female">female</option>
+                                    <option value="male">male</option>
+                                    <option value="other">Do not wish to answer</option>
+                                </select>
+                            ) : (
+                                user.gender
                             )}
                         </dd>
                     </div>

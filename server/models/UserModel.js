@@ -18,9 +18,22 @@ const UserSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    gender: {
+        type: String,
+        required: true,
+        enum: ["male", "female", "other"]
+    },
+    profilePic: {
+        type: String,
+        default: ""
+    },
     applications: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company'
+    }],
+    posts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
     }]
 });
 
@@ -41,6 +54,10 @@ UserSchema.methods.toJSON = function() {
         username: this.username,
         email: this.email,
         role: "User",
+        gender: this.gender,
+        profilePic: this.profilePic,
+        applications: this.applications,
+        posts: this.posts
     };
 };
 
