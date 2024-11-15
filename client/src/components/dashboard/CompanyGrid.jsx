@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import SingleCompany from './SingleCompany';
 import { useSelector } from 'react-redux';
 import { useGetCompanyQuery } from '../../redux/companyApiSlice';
+import Filter from './Filter';
+import FunctionButtons from './FunctionButtons';
 
 const CompanyGrid = () => {
     const { userInfo } = useSelector((state) => state.authReducer);
     const { data: companies } = useGetCompanyQuery();
     const [isReverse, setIsReverse] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState('All');
     const [searchInput, setSearchInput] = useState('');
     const validCompanies = Array.isArray(companies) ? companies : [];
@@ -28,6 +31,24 @@ const CompanyGrid = () => {
 
     return (
         <div className="container mx-auto p-6">
+            <div className="flex flex-row justify-between items-center">
+                {/* Filter Box */}
+                <Filter 
+                    statusFilter={statusFilter} 
+                    setStatusFilter={setStatusFilter} 
+                    filteredCompanies={filteredCompanies}
+                />
+                {/* Functional Buttons */}
+                <FunctionButtons
+                    isReverse={isReverse}
+                    setIsReverse={setIsReverse}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    searchInput={searchInput}
+                    setSearchInput={setSearchInput}
+                    setStatusFilter={setStatusFilter}
+                />
+            </div>
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 mt-1 items-center">
                 {displayedCompanies.length > 0 ? (
                     displayedCompanies.map(company => (
