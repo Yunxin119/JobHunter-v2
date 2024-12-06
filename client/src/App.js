@@ -12,6 +12,9 @@ import ThemeToggle from './components/ThemeToggle';
 import EditUsers from './pages/admin/EditUsers';
 import Profile from './pages/Profile';
 import Calendar from './pages/Calendar';
+import JobSearch from "./pages/JobSearch";
+import SearchResults from "./pages/SearchResults";
+import JobDetails from "./pages/JobDetails";
 function App() {
   const { userInfo } = useSelector((state) => state.authReducer)
   const isLoggedIn = userInfo !== null;
@@ -27,6 +30,9 @@ function App() {
         <Route path='/users' element={<EditUsers />} />
         <Route path='/profile/:id' element={<Profile />} />
         <Route path='/calendar' element={<Calendar />} />
+        <Route path="/search" element={<JobSearch />} />
+        <Route path="/search/results" element={<SearchResults />} />
+        <Route path="/details/:id" element={<JobDetails />} />
       </Routes>
       <ToastContainer />
     </div>

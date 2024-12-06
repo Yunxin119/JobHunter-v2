@@ -6,6 +6,8 @@ dotenv.config();
 import CompanyRoutes from './routes/CompanyRoutes.js';
 import UserRoutes from './routes/UserRoutes.js';
 import PostRoutes from './routes/PostRoutes.js';
+import JobRoutes from './routes/JobRoutes.js';
+
 // MARK: import database connection
 import connectDB from './db/db.js';
 import cors from 'cors';
@@ -32,6 +34,8 @@ app.use(cookieParser());
 app.use('/api/companies', CompanyRoutes);
 app.use('/api/users', UserRoutes);
 app.use('/api/posts', PostRoutes);
+app.use('/api/jobs', JobRoutes);
+
 
 app.listen(PORT, () => {
     connectDB();
