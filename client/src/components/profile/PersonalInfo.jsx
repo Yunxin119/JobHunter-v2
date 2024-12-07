@@ -41,7 +41,7 @@ export default function PersonalInfo({ isCurrentUser, user }) {
         <div className="w-[60%] shadow sm:rounded-lg">
             <div className="px-4 py-6 sm:px-6">
                 <div className="flex flex-row items-center justify-between">
-                    <h3 className="text-base font-semibold text-gray-900">User Information</h3>
+                    <h3 className="text-base font-semibold label-text">User Information</h3>
                     <button
                         type="button"
                         className={`rounded-md text-sm ${!editProfile ? 'text-blue-500 hover:text-blue-400' : 'text-gray-500 hover:text-gray-400'}`}
@@ -55,8 +55,8 @@ export default function PersonalInfo({ isCurrentUser, user }) {
             <div className="border-t border-gray-100">
                 <dl className="divide-y divide-gray-100">
                     <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">Username</dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                        <dt className="text-sm font-medium label-text">Username</dt>
+                        <dd className="mt-1 text-sm text-gray-700 dark:text-gray-400 sm:col-span-2">
                             {editProfile ? (
                                 <input
                                     className="form-control profile-input"
@@ -70,8 +70,8 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                     </div>
                     { isCurrentUser && (
                         <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-900">Email address</dt>
-                            <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                            <dt className="text-sm font-medium label-text">Email address</dt>
+                            <dd className="mt-1 text-sm text-gray-700 dark:text-gray-400 sm:col-span-2">
                                 {editProfile ? (
                                     <input
                                         className="form-control profile-input"
@@ -86,8 +86,8 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                     )}
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                        <dt className="label-text">Gender</dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                        <dt className="text-sm font-medium label-text">Gender</dt>
+                        <dd className="mt-1 text-sm text-gray-700 dark:text-gray-400 sm:col-span-2">
                             {editProfile ? (
                                 <select
                                     className="form-control profile-input"
@@ -108,8 +108,8 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                     </div>
                     {isCurrentUser && (
                         <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-900">Password</dt>
-                            <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 flex">
+                            <dt className="text-sm font-medium label-text">Password</dt>
+                            <dd className="mt-1 text-sm text-gray-700 dark:text-gray-400 sm:col-span-2 flex">
                                 {editProfile ? (
                                     <div className='flex flex-col gap-2'>
                                         <input
@@ -132,8 +132,8 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                         </div>
                     )}
                     <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">About</dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                        <dt className="text-sm font-medium label-text">About</dt>
+                        <dd className="mt-1 text-sm text-gray-700 dark:text-gray-400 sm:col-span-2">
                             {user.about || 'No information provided'}
                         </dd>
                     </div>

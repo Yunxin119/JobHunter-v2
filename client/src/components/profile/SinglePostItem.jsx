@@ -23,7 +23,7 @@ const SinglePostItem = ({ post, isCurrentUser }) => {
         <div className="glass-background h-48"></div>
         {isCurrentUser && (
             <button 
-            className='btn btn-sm btn-ghost absolute top-2 right-2 justify-end text-gray-500'
+            className='btn btn-sm btn-ghost absolute top-2 right-2 justify-end text-gray-700 dark:text-gray-400'
             onClick={handleDelete}
             >
                 <FaXmark />
@@ -38,9 +38,9 @@ const SinglePostItem = ({ post, isCurrentUser }) => {
         </div>
         <div className="flex flex-1 flex-col mx-3">
             { post.content.split('').length > 100 ? (
-                <p className="text-sm text-gray-500">{post.content.slice(0, 100)}...</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{post.content.slice(0, 100)}...</p>
             ) : (
-                <p className="text-sm text-gray-500">{post.content}</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{post.content}</p>
             )}
             <Link to={`/details/post/${post._id}`} className="text-blue-500 mt-1 truncate text-sm">
                 View Detail

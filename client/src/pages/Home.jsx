@@ -12,10 +12,10 @@ const Home = () => {
         <div className="flex flex-col items-center justify-center mx-auto max-w-2xl py-40 sm:py-32 lg:py-48">
           <div className="text-center">
             <h1 className="text-balance text-5xl lg:text-7xl font-semibold tracking-tight text-gray-900 dark:text-gray-200 sm:text-5xl">
-              Keep track of every application
+              Discover Jobs & Track Applications
             </h1>
             <p className="mt-8 text-pretty text-lg font-medium text-gray-800 dark:text-gray-300 text-opacity-80 sm:text-lg">
-              It's never been easier to keep track of your job applications. With OfferHunter, you can keep track of every job you apply to, every interview you have, and every offer you receive.
+              JobHunter makes it effortless to stay on top of your job applications. Search for opportunities, track every application, interview, and offer, and connect with others to share your experiences. Discuss your thoughts on specific roles, offer guidance, and help others land their dream jobs—while staying organized on your own career journey.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               { userInfo ? (
