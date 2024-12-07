@@ -1,16 +1,22 @@
-import express from 'express';
-import { getAllPosts, getPostsByUser, getPost, createPost, updatePost, deletePost } from '../controllers/PostControllers.js';
-import { protectMiddleware, vipMiddleware, adminMiddleware } from '../middleware/authMiddleware.js';
+import express from "express";
+import {
+    getAllPosts,
+    getPostsByUser,
+    getPost,
+    createPost,
+    updatePost,
+    deletePost,
+    getPostsByJob,
+} from "../controllers/PostControllers.js";
+import { protectMiddleware } from "../middleware/authMiddleware.js"; // 导入 authMiddleware
 
 const router = express.Router();
-// router.route('/').get(protectedMiddleware, adminMiddleware, getAllPosts).post(protectedMiddleware, vipMiddleware, createPost);
-router.route('/').get(getAllPosts).post(protectMiddleware, createPost);
-router.route('/:id').get(getPost).put(updatePost).delete(protectMiddleware,deletePost);
-router.route('/user/:id').get(getPostsByUser);
 
-// NOTE: 
-// post feature is only for vip users
-// only the vip user themselves/admin can delete their posts, only vip users can edit their posts
-// only vip users can view the posts in user profile
+// 添加 protectMiddleware 到 POST 路由
+router.route("/").get(getAllPosts).post(protectMiddleware, createPost);
+router.route("/:id").get(getPost).put(protectMiddleware, updatePost).delete(protectMiddleware, deletePost);
+router.route("/user/:id").get(getPostsByUser);
+router.route("/job/:jobId").get(getPostsByJob); // 根据 jobId 获取所有 posts
+
 
 export default router;

@@ -24,7 +24,7 @@ router.get('/search', async (req, res) => {
         );
         const jobs = response.data.results;
         jobs.forEach((job) => {
-            jobCache[job.id] = job; // 缓存职位数据
+            jobCache[job.id] = job; 
         });
         res.json(jobs);
     } catch (error) {
@@ -36,11 +36,11 @@ router.get('/search', async (req, res) => {
 router.get('/details/:id', (req, res) => {
     const { id } = req.params;
 
-    const job = jobCache[id]; // 从缓存中查找职位
+    const job = jobCache[id];
     if (job) {
-        return res.json(job); // 返回职位详情
+        return res.json(job);
     } else {
-        return res.status(404).json({ error: "Job not found" }); // 如果职位不在缓存中
+        return res.status(404).json({ error: "Job not found" });
     }
 });
 

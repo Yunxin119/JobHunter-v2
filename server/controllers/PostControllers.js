@@ -37,19 +37,36 @@ export const getPost = async (req, res) => {
 
 // Function to create a post
 export const createPost = async (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, jobId, userId } = req.body;
+
+    // 检查必填字段
+    if (!jobId || !userId || !content) {
+        return res.status(400).json({ msg: "Job ID, User ID, and content are required." });
+    }
+
     try {
-        console.log(req.user);
-        const post = await Post.create({ title, content, userId: req.user._id });
-        const user = await User.findById(req.user._id);
-        user.posts.push(post);
-        await user.save();
+        // 创建帖子
+        const post = await Post.create({
+            title,
+            content,
+            userId, // 从请求体中获取用户 ID
+            jobId,
+        });
+
+        // 更新用户的帖子列表
+        const user = await User.findById(userId);
+        if (user) {
+            user.posts.push(post._id);
+            await user.save();
+        }
+
         res.status(201).json({ post });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ msg: "Failed to create post" });
+        console.error("Error creating post:", error.message);
+        res.status(500).json({ msg: "Failed to create post." });
     }
 };
+
 
 // Function to update a post
 export const updatePost = async (req, res) => {
@@ -125,5 +142,26 @@ export const unlikePost = async (req, res) => {
         res.status(200).json({ post });
     } catch (error) {
         res.status(500).json({ msg: "Failed to unlike post" });
+    }
+};
+
+export const getPostsByJob = async (req, res) => {
+    const { jobId } = req.params; // 获取 jobId
+    console.log("Fetching posts for jobId:", jobId);
+
+    try {
+        // 查询所有与 jobId 相关的帖子，并填充 userId 的基本信息
+        const posts = await Post.find({ jobId })
+            .populate("userId", "username profilePic")
+            .populate("comments");
+
+        if (!posts) {
+            return res.status(404).json({ msg: "No posts found for this job." });
+        }
+
+        res.status(200).json(posts);
+    } catch (error) {
+        console.error("Error fetching posts:", error.message);
+        res.status(500).json({ msg: "Failed to fetch posts." });
     }
 };
