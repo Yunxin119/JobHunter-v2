@@ -12,7 +12,6 @@ const EditCompany = ({company}) => {
     const [status, setStatus] = useState(company.status || '');
     const [city, setCity] = useState(company.city || '');
     const [link, setLink] = useState(company.link || '');
-    const [imageDomain, setImageDomain] = useState(company.imageDomain || '');
     const formattedDate = company.applyDate
     ? new Date(company.applyDate).toISOString().split('T')[0]
     : '';
@@ -22,7 +21,7 @@ const EditCompany = ({company}) => {
     const [updateCompany, {isLoading}] = useUpdateCompanyMutation();
     const handleEdit = async(e) => {
         e.preventDefault();
-        if (!name || !role || !status || !city || !link || !imageDomain || !applyDate) {
+        if (!name || !role || !status || !city || !link || !applyDate) {
             toast.error('Please fill out all fields');
             return;
         }
@@ -34,7 +33,6 @@ const EditCompany = ({company}) => {
                 status,
                 city,
                 link,
-                imageDomain,
                 applyDate: formattedDate,
                 updatedAt: new Date().toISOString(),
             };
@@ -137,17 +135,6 @@ const EditCompany = ({company}) => {
                   className="input w-full"
                   value={link}
                   onChange={(e) => setLink(e.target.value)}
-                />
-              </div>
-              <div className="form-control mt-1">
-                <label className="label">
-                  <span className="label-text">Domain</span>
-                </label>
-                <input
-                  type="text"
-                  className="input w-full"
-                  value={imageDomain}
-                  onChange={(e) => setImageDomain(e.target.value)}
                 />
               </div>
 

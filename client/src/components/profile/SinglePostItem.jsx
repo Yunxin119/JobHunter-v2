@@ -2,6 +2,7 @@ import React from 'react'
 import { FaXmark } from "react-icons/fa6";
 import { useDeletePostMutation } from '../../redux/postApiSlice'
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const SinglePostItem = ({ post, isCurrentUser }) => {
     const [deletePost, {isLoading}] = useDeletePostMutation();
@@ -36,7 +37,14 @@ const SinglePostItem = ({ post, isCurrentUser }) => {
             </div>
         </div>
         <div className="flex flex-1 flex-col mx-3">
-            <p className="text-sm text-gray-500">{post.content}</p>
+            { post.content.split('').length > 100 ? (
+                <p className="text-sm text-gray-500">{post.content.slice(0, 100)}...</p>
+            ) : (
+                <p className="text-sm text-gray-500">{post.content}</p>
+            )}
+            <Link to={`/details/post/${post._id}`} className="text-blue-500 mt-1 truncate text-sm">
+                View Detail
+            </Link>
         </div>
     </div>
     </>

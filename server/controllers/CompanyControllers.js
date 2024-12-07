@@ -1,6 +1,7 @@
 import Company from "../models/CompanyModel.js";
 import url from "url";
 import User from "../models/UserModel.js";
+import axios from "axios";
 
 // @DESC: Get all companies for a specific user
 // PATH: /api/companies
@@ -23,16 +24,14 @@ export const getCompanies = async (req, res) => {
 // METHOD: POST
 // PRIVATE
 export const addCompany = async (req, res) => {
-        console.log(req.body);
         try {
-        const { name, role, city, link, applyDate, status, imageDomain } = req.body;
-        const parsedUrl = url.parse(imageDomain);
-        const domain = parsedUrl.hostname || parsedUrl.path;
-        const imgUrl = `https://logo.clearbit.com/${domain}`;
+        const { name, role, city, link, applyDate, status } = req.body;
 
         if (!name || !role || !city || !link || !applyDate || !status) {
             return res.status(400).json({ error: "All fields are required" });
         }
+
+        const imgUrl = await getImage(name);
 
         const applyDatePattern = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
         if (!applyDatePattern.test(applyDate)) {
@@ -47,7 +46,6 @@ export const addCompany = async (req, res) => {
             imgUrl,
             applyDate,
             status,
-            imageDomain,
             user_id: req.user._id,
             updatedAt: status === "Submitted" ? new Date(applyDate) : new Date()
         });
@@ -75,15 +73,18 @@ export const updateCompany = async (req, res) => {
         const company = await Company.findById(id);
         if (!company) return res.status(404).json({ message: "Company not found :(" });
 
-        const { name, role, city, link, status, imageDomain } = req.body;
-        const imgUrl = `https://logo.clearbit.com/${imageDomain || company.imageDomain}`;
+        const { name, role, city, link, status } = req.body;
 
+        let imgUrl = company.imgUrl;
+
+        if (name !== company.name) {
+            imgUrl = await getImage(name);
+        } 
         company.name = name || company.name;
         company.role = role || company.role;
         company.city = city || company.city;
         company.link = link || company.link;
         company.status = status || company.status;
-        company.imageDomain = imageDomain || company.imageDomain;
         company.imgUrl = imgUrl;
         company.updatedAt = status === "Submitted" ? new Date(company.applyDate) : new Date();
 
@@ -115,4 +116,18 @@ export const deleteCompany = async (req, res) => {
         console.error("Delete Company Error:", error);
         res.status(500).json({ message: "Failed to delete this company, please try again :(" });
     }
+};
+
+
+// Utils: Image Domain Helper
+const getImage = async (name) => {
+    try {
+        const response = await axios.get(`https://api.brandfetch.io/v2/search/${name}`);
+        if (response.data && response.data.length > 0) {
+            return response.data[0].icon;
+        }
+    } catch (error) {
+        console.error("Error fetching image from Brandfetch:", error.message);
+    }
+    return null;
 };
