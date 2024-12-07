@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useSelector } from "react-redux"; // 引入 useSelector
+import { useSelector } from "react-redux";
+import SinglePostItem from "../components/profile/SinglePostItem"; // 注意调整导入路径
 
 const JobDetails = () => {
-  const { id } = useParams(); // 当前职位的 ID
-  const [jobDetails, setJobDetails] = useState(null); // 职位详情
-  const [posts, setPosts] = useState([]); // 帖子列表
-  const [newPost, setNewPost] = useState(""); // 新帖子内容
+  const { id } = useParams();
+  const [jobDetails, setJobDetails] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [newPost, setNewPost] = useState("");
   const [error, setError] = useState(null);
 
-  // 从 Redux 获取当前用户信息
   const currentUser = useSelector((state) => state.authReducer.userInfo);
 
-  // 获取职位详情和帖子列表
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
@@ -28,7 +27,6 @@ const JobDetails = () => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/posts/job/${id}`);
-        console.log(response.data)
         setPosts(response.data);
       } catch (error) {
         console.error("Error fetching posts:", error.message);
@@ -39,43 +37,39 @@ const JobDetails = () => {
     fetchPosts();
   }, [id]);
 
-  // 发布帖子
   const handleAddPost = async () => {
     if (!newPost.trim()) {
-        alert("Please write something before posting!");
-        return;
+      alert("Please write something before posting!");
+      return;
     }
 
     if (!currentUser) {
-        alert("You must be logged in to post!");
-        return;
+      alert("You must be logged in to post!");
+      return;
     }
 
     try {
-        const response = await axios.post(
-            "http://localhost:5000/api/posts",
-            {
-                title: "test", // 示例标题
-                jobId: id,    // 当前职位 ID
-                content: newPost, // 帖子内容
-                userId: currentUser._id
-            },
-            {
-                withCredentials: true, // 启用 cookie
-            }
-        );
+      const response = await axios.post(
+        "http://localhost:5000/api/posts",
+        {
+          title: "test",
+          jobId: id,
+          content: newPost,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
-        setPosts([response.data.post, ...posts]); // 更新帖子列表
-        setNewPost(""); // 清空输入框
+      setPosts([response.data.post, ...posts]);
+      setNewPost("");
     } catch (error) {
-        console.error(
-            "Error creating post:",
-            error.response?.data?.msg || error.message
-        );
+      console.error(
+        "Error creating post:",
+        error.response?.data?.msg || error.message
+      );
     }
-};
-
-
+  };
 
   if (error) {
     return <div className="p-4">{error}</div>;
@@ -98,14 +92,15 @@ const JobDetails = () => {
 
       {/* 帖子列表 */}
       <h2 className="text-xl font-bold mt-8">Related Posts</h2>
-      <ul className="mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {posts.map((post) => (
-          <li key={post._id} className="border p-2 my-2">
-            <p><strong>{post.username}</strong> ({new Date(post.createdAt).toLocaleString()}):</p>
-            <p>{post.content}</p>
-          </li>
+          <SinglePostItem
+            key={post._id}
+            post={post}
+            isCurrentUser={currentUser && currentUser._id === post.userId} // 判断是否为当前用户帖子
+          />
         ))}
-      </ul>
+      </div>
 
       {/* 发布帖子表单 */}
       <div className="mt-4">
