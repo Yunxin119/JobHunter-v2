@@ -40,6 +40,13 @@ const postApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Post']
         }),
+        getPostsByJob: builder.query({
+            query: (jobId) => ({
+                url: Post_URL + '/job/'+jobId,
+            }),
+            providesTags: ['Post'],
+            keepUnusedDataFor: 5,
+        })
     })
 })
 
@@ -48,7 +55,8 @@ export const {
     useAddPostMutation, 
     useUpdatePostMutation, 
     useDeletePostMutation, 
-    useGetUserPostsQuery
+    useGetUserPostsQuery,
+    useGetPostsByJobQuery
 } = postApiSlice;
 
 export default postApiSlice;

@@ -37,6 +37,14 @@ body {
   @apply bg-blue-500 bg-opacity-70 rounded-xl hover:bg-blue-700 hover:bg-opacity-80 px-3 py-2 text-white;
 }
 
+.btn-disable {
+  @apply bg-gray-500 bg-opacity-70 hover:bg-gray-500 hover:bg-opacity-70 rounded-xl px-3 py-2 text-white;
+}
+
+.btn-secondary {
+  @apply bg-gray-500 bg-opacity-70 rounded-xl hover:bg-gray-700 hover:bg-opacity-80 px-3 py-2 text-white;
+}
+
 .edit {
   @apply bg-gray-200 dark:bg-gray-600 dark:bg-opacity-50 w-full max-w-lg p-6 rounded-lg shadow-lg bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-50;
 }
@@ -89,4 +97,8 @@ body {
 
 .profile-input {
   @apply rounded-lg mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 dark:text-gray-300 dark:bg-gray-800 dark:bg-opacity-20 bg-gray-200 bg-opacity-30;
+}
+
+.textfield {
+  @apply placeholder-gray-700 dark:text-gray-300 text-gray-700 rounded-lg p-2 bg-gray-200 border-gray-300 border-[1px] bg-opacity-30 w-full;
 }

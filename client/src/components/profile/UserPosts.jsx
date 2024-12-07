@@ -2,7 +2,10 @@ import React from 'react'
 import { useGetUserPostsQuery } from '../../redux/postApiSlice'
 import SinglePostItem from './SinglePostItem';
 const UserPosts = ({ user, isCurrentUser }) => {
-    const { data, isLoading, error } = useGetUserPostsQuery(user._id);
+    const { data, isLoading, error, refetch } = useGetUserPostsQuery(user._id);
+    const handlePostDeleted = () => {
+        refetch();
+    }
     const validPosts = data?.posts || [];
     console.log(validPosts);
   return (
@@ -10,7 +13,7 @@ const UserPosts = ({ user, isCurrentUser }) => {
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 mt-1 items-center">
             {validPosts.length > 0 ? (
                 validPosts.map(post => (
-                    <SinglePostItem key={post._id} post={post} isCurrentUser={isCurrentUser}/>
+                    <SinglePostItem key={post._id} post={post} isCurrentUser={isCurrentUser} onPostDeleted={handlePostDeleted}/>
                 ))
             ) : (
                 <div className="text-center text-gray-700 text-2xl">No posts found</div>

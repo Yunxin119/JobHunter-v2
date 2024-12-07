@@ -37,30 +37,38 @@ export const getPost = async (req, res) => {
 
 // Function to create a post
 export const createPost = async (req, res) => {
+    console.log(req.body);
     const { title, content, jobId, userId } = req.body;
 
-    // 检查必填字段
-    if (!jobId || !userId || !content) {
-        return res.status(400).json({ msg: "Job ID, User ID, and content are required." });
+    // Check required fields
+    if (!jobId || !userId || !content || !title) {
+        console.log("Job ID, User ID, title, and content are required.");
+        return res.status(400).json({ msg: "Job ID, User ID, title, and content are required." });
     }
 
     try {
-        // 创建帖子
+        // Verify user exists
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ msg: "User not found." });
+        }
+
+        // Create the post
         const post = await Post.create({
             title,
             content,
-            userId, // 从请求体中获取用户 ID
+            userId,
             jobId,
         });
 
-        // 更新用户的帖子列表
-        const user = await User.findById(userId);
-        if (user) {
-            user.posts.push(post._id);
-            await user.save();
-        }
+        // Update user's posts list
+        user.posts.push(post._id);
+        await user.save();
 
-        res.status(201).json({ post });
+        // Populate user details for the post
+        const populatedPost = await Post.findById(post._id).populate("userId", "username profilePic");
+
+        res.status(201).json({ post: populatedPost });
     } catch (error) {
         console.error("Error creating post:", error.message);
         res.status(500).json({ msg: "Failed to create post." });
