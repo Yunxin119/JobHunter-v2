@@ -15,6 +15,7 @@ import Calendar from './pages/Calendar';
 import JobSearch from "./pages/JobSearch";
 import SearchResults from "./pages/SearchResults";
 import JobDetails from "./pages/JobDetails";
+import PostDetail from './pages/PostDetail';
 function App() {
   const { userInfo } = useSelector((state) => state.authReducer)
   const isLoggedIn = userInfo !== null;
@@ -26,13 +27,15 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path='/login' element={isLoggedIn ? <Home /> : <Login />} />
         <Route path='/register' element={isLoggedIn ? <Home /> : <Register />} />
-        <Route path='/dashboard' element={isLoggedIn ? <Dashboard /> : <Login />} />
+        <Route path='/applications' element={isLoggedIn ? <Dashboard /> : <Login />} />
         <Route path='/users' element={<EditUsers />} />
+        <Route path="/profile" element={isLoggedIn ? <Profile /> : <Login />} />
         <Route path='/profile/:id' element={<Profile />} />
         <Route path='/calendar' element={<Calendar />} />
         <Route path="/search" element={<JobSearch />} />
         <Route path="/search/results" element={<SearchResults />} />
         <Route path="/details/:id" element={<JobDetails />} />
+        <Route path="/details/post/:id" element={<PostDetail />} />
       </Routes>
       <ToastContainer />
     </div>

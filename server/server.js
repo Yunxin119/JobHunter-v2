@@ -7,6 +7,7 @@ import CompanyRoutes from './routes/CompanyRoutes.js';
 import UserRoutes from './routes/UserRoutes.js';
 import PostRoutes from './routes/PostRoutes.js';
 import JobRoutes from './routes/JobRoutes.js';
+import CommentRoutes from './routes/CommentRoutes.js';
 
 // MARK: import database connection
 import connectDB from './db/db.js';
@@ -35,6 +36,7 @@ app.use('/api/companies', CompanyRoutes);
 app.use('/api/users', UserRoutes);
 app.use('/api/posts', PostRoutes);
 app.use('/api/jobs', JobRoutes);
+app.use('/api/comments', CommentRoutes);
 
 
 app.listen(PORT, () => {

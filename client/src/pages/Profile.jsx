@@ -10,14 +10,14 @@ import UserPosts from '../components/profile/UserPosts'
 
 const Profile = () => {
   const { userInfo } = useSelector((state) => state.authReducer)
-  console.log(userInfo);
   const { id }= useParams();
-  const { data: profileUser, isLoading, error } = useGetProfileQuery(id);
-  console.log(profileUser);
+  const profileId = id || userInfo?._id;
+  const { data: profileUser, isLoading, error } = useGetProfileQuery(profileId);
+
   if (!profileUser){
     return <Page404 />
   };
-  const isCurrentUser = userInfo?._id === id; 
+  const isCurrentUser = userInfo?._id === profileId; 
   return (
     <div className='screen'>
       <Navbar />
