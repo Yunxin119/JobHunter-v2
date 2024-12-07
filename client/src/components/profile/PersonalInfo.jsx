@@ -68,20 +68,23 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                             )}
                         </dd>
                     </div>
-                    <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">Email address</dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
-                            {editProfile ? (
-                                <input
-                                    className="form-control profile-input"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            ) : (
-                                user.email
-                            )}
-                        </dd>
-                    </div>
+                    { isCurrentUser && (
+                        <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-900">Email address</dt>
+                            <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                                {editProfile ? (
+                                    <input
+                                        className="form-control profile-input"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                ) : (
+                                    user.email
+                                )}
+                            </dd>
+                        </div>
+                    )}
+
                     <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
                         <dt className="label-text">Gender</dt>
                         <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">

@@ -27,23 +27,18 @@ const Navbar = () => {
                   <Link to="/" className="text-2xl h-8 font-bold text-gray-200">JobHunter.</Link>
                 </div>
                 <div className="flex md:space-x-8 md:ml-6 sm:space-x-5 sm:ml-3">
-                  <Link
-                    to="/dashboard"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-200 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
-                    to="/calendar"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-200 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Calendar
-                  </Link>
+
                   <Link
                     to="/search"
                     className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-200 hover:border-gray-300 hover:text-gray-700"
                   >
                     Job Search
+                  </Link>
+                  <Link
+                    to="/applications"
+                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-200 hover:border-gray-300 hover:text-gray-700"
+                  >
+                    My Applications
                   </Link>
                 </div>
               </div>
@@ -69,7 +64,7 @@ const Navbar = () => {
                         >
                             <MenuItem>
                             <Link
-                                to={`/profile/${userInfo._id}`}
+                                to={`/profile`}
                                 className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
                             >
                                 Profile
