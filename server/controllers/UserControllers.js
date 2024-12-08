@@ -19,7 +19,7 @@ export const getAllUsers = async (req, res) => {
 // Register a new user
 export const register = async (req, res) => {
     try {
-        const { username, password, confirmPassword, email, gender } = req.body;
+        const { username, password, confirmPassword, email, gender, role } = req.body;
 
         if (await User.findOne({ username })) {
             return res.status(400).json({ msg: "User already exists" });
@@ -38,6 +38,7 @@ export const register = async (req, res) => {
             username,
             email,
             gender,
+            role,
             profilePic: gender === "male" ? maleProfilePic : gender === "female" ? femaleProfilePic : profilePic
         });
 
