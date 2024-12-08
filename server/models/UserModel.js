@@ -34,7 +34,13 @@ const UserSchema = new mongoose.Schema({
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
-    }]
+    }],
+    role: {
+        type: String,
+        required: true,
+        enum: ["admin", "user", "superuser"],
+        default: "user" 
+    }
 });
 
 // MARK: Method to set hashed password
@@ -53,7 +59,7 @@ UserSchema.methods.toJSON = function() {
         _id: this._id,
         username: this.username,
         email: this.email,
-        role: "User",
+        role: this.role,
         gender: this.gender,
         profilePic: this.profilePic,
         applications: this.applications,
