@@ -13,7 +13,7 @@ const SearchResults = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/jobs/search", {
+        const response = await axios.get("http://localhost:5001/api/jobs/search", {
           params: { query, location },
         });
         setJobs(response.data);

@@ -15,6 +15,7 @@ export default function PersonalInfo({ isCurrentUser, user }) {
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState(user.gender);
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [role, setRole] = useState(user.role);
     const [editProfile, setEditProfile] = useState(false);
 
     const handleEditProfile = async () => {
@@ -26,7 +27,7 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                 return;
             }
             try {
-                const res = await updateProfile({ id: user._id, username, email, password, confirmPassword, gender }).unwrap();
+                const res = await updateProfile({ id: user._id, username, email, password, confirmPassword, gender, role }).unwrap();
                 toast.success('Profile updated');
                 setEditProfile(false);
                 dispatch(setCredential(res));
@@ -84,6 +85,25 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                             </dd>
                         </div>
                     )}
+
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-900">Role</dt>
+                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                            {editProfile ? (
+                                <select
+                                    className="form-control profile-input"
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                >
+                                    <option value="user">User</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="superuser">Superuser</option>
+                                </select>
+                            ) : (
+                                user.role
+                            )}
+                        </dd>
+                    </div>
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
                         <dt className="label-text">Gender</dt>

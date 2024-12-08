@@ -102,7 +102,7 @@ export const editProfile = async (req, res) => {
         console.log(user);
         if (!user) return res.status(404).json({ msg: "User not found" });
 
-        const { username, email, password, confirmPassword, gender } = req.body;
+        const { username, email, password, confirmPassword, gender, role } = req.body;
 
         user.username = username || user.username;
         user.email = email || user.email;
@@ -112,6 +112,14 @@ export const editProfile = async (req, res) => {
             user.profilePic = `https://avatar.iran.liara.run/public/username=${username}`
         }
         user.gender = gender || user.gender;
+
+        if (role) {
+            const validRoles = ["admin", "user", "superuser"];
+            if (!validRoles.includes(role)) {
+                return res.status(400).json({ msg: `Invalid role. Valid roles are: ${validRoles.join(", ")}` });
+            }
+            user.role = role;
+        }
 
         if (password) {
             if (password !== confirmPassword) {
