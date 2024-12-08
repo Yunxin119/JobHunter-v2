@@ -12,6 +12,7 @@ import CommentRoutes from './routes/CommentRoutes.js';
 // MARK: import database connection
 import connectDB from './db/db.js';
 import cors from 'cors';
+import path from 'path';
 
 import cookieParser from 'cookie-parser';
 
@@ -20,7 +21,7 @@ const PORT = process.env.PORT || 5001;
 
 // MARK: CORS
 const corsOptions = {
-    origin: process.env.FRONTEND_URL,
+    origin: true,
     credentials: true,
     optionsSuccessStatus: 200,
 };
