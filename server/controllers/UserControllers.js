@@ -2,6 +2,9 @@ import User from "../models/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import generateTokenAndCookie from "../middleware/generateTokenAndCookie.js";
+import Comment from "../models/CommentModel.js";
+import Post from "../models/PostModel.js";
+import Company from "../models/CompanyModel.js";
 
 // Function to get all users
 export const getAllUsers = async (req, res) => {
@@ -143,8 +146,11 @@ export const deleteUser = async (req, res) => {
     try {
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ msg: "User not found" });
-
         await User.deleteOne({ _id: id });
+        await Post.deleteMany({ userId: id });
+        await Comment.deleteMany({ userId: id });
+        await Company.deleteMany({ user_id: id });
+    
         res.status(200).json({ msg: "User deleted" });
     } catch (error) {
         res.status(500).json({ msg: error.message });

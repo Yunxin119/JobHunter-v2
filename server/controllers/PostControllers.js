@@ -24,8 +24,9 @@ export const getPostsByUser = async (req, res) => {
 
 // Function to get a single post
 export const getPost = async (req, res) => {
+    const { id } = req.params;
     try {
-        const post = await Post.findById(req.params.id).populate("userId", "username profilePic").populate("comments");
+        const post = await Post.findById(id).populate("userId", "username profilePic");
         if (!post) {
             return res.status(404).json({ msg: "Post not found" });
         }
@@ -67,7 +68,6 @@ export const createPost = async (req, res) => {
     }
 };
 
-
 // Function to update a post
 export const updatePost = async (req, res) => {
     const { title, content } = req.body;
@@ -99,6 +99,7 @@ export const deletePost = async (req, res) => {
             return res.status(401).json({ msg: "You are not authorized to delete this post" });
         }
         await Post.deleteOne({ _id: req.params.id });
+        await Comment.deleteMany({ postId: req.params.id });
         const user = await User.findById(req.user._id);
         user.posts = user.posts.filter((postId) => postId.toString() !== req.params.id);
         await user.save();

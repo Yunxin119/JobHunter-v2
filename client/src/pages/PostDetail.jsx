@@ -1,167 +1,169 @@
 import React, { useEffect, useState } from "react";
 import { BsHandThumbsUp, BsChatDots, BsTrash } from "react-icons/bs";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
-const baseUrl = "http://localhost:5001/api/";
+import { useGetPostByIdQuery, useLikePostMutation, useDeletePostMutation } from "../redux/postApiSlice";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { useAddCommentMutation, useGetCommentsByPostQuery, useDeleteCommentsByPostMutation, useDeleteUserCommentMutation } from "../redux/commentApiSlice";
+
 const PostDetail = () => {
-  const userInfo = localStorage.getItem("userInfo");
-  const currentUser = userInfo && JSON.parse(userInfo);
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.authReducer);
+
+  // Post and Comments Queries
+  const { data, refetch: refetchPost } = useGetPostByIdQuery(id);
+  const post = data?.post;
+  console.log(post)
+  const postUser = post?.userId
+  const { data: commentsData, refetch: refetchComments } = useGetCommentsByPostQuery(id);
+  const comments = commentsData?.comments || [];
+  // Mutations
+  const [likePost, { isLoading: isLiking }] = useLikePostMutation();
+  const [addComment, { isLoading: isAddingComment }] = useAddCommentMutation();
+  const [deleteComment] = useDeleteUserCommentMutation();
+  const [deletePost] = useDeletePostMutation();
+
+  // Local States
   const [showCommentModal, setShowCommentModal] = useState(false);
-  const [data, setData] = useState({});
   const [comment, setComment] = useState("");
-  const init = async () => {
-    const res = await axios.get(`${baseUrl}posts/post/${id}`);
-    if (res.status === 200 && res?.data?.post) {
-      setData(res.data.post);
-    }
-  };
-  const likePost = async () => {
+
+  // Handle Like Post
+  const handleLikePost = async () => {
     try {
-      const res = await axios.post(`${baseUrl}posts/likePost/${id}`, {
-        user: userInfo && JSON.parse(userInfo),
-      });
-      if (res.status === 200) {
-        toast.success("success");
-        init();
-      }
+      await likePost(id).unwrap();
+      toast.success("Post liked successfully");
+      refetchPost();
     } catch (error) {
-      toast.warning(error.response.data.msg);
+      toast.error(error?.data?.message || "Failed to like post");
     }
   };
-  const commentPost = async () => {
+
+  // Handle Add Comment
+  const handleAddComment = async () => {
+    if (!comment.trim()) {
+      toast.warning("Comment cannot be empty");
+      return;
+    }
     try {
-      const res = await axios.post(`${baseUrl}posts/commentPost/${id}`, {
-        user: userInfo && JSON.parse(userInfo),
-        comment,
-      });
-      if (res.status === 200) {
-        toast.success("success");
-        init();
-        setComment("");
-        setShowCommentModal(false);
-      }
+      await addComment({ pid: id, content: comment }).unwrap();
+      toast.success("Comment added successfully");
+      setComment("");
+      setShowCommentModal(false);
+      refetchComments();
     } catch (error) {
-      toast.warning(error.response.data.msg);
+      toast.error(error?.data?.message || "Failed to add comment");
     }
   };
 
-  // Delete a post
-  const deletePost = async () => {
-    
+    // Handle Delete Comment
+    const handleDeleteComment = async (commentId) => {
+      const confirm = window.confirm("Are you sure you want to delete this comment?");
+      if (!confirm) return;
+      try {
+        await deleteComment(commentId).unwrap();
+        toast.success("Comment deleted successfully");
+        refetchComments();
+      } catch (error) {
+        toast.error("Failed to delete comment");
+      }
+    };
+
+  // Handle Delete Post
+  const handleDeletePost = async () => {
+    const confirm = window.confirm("Are you sure you want to delete this post?");
+    if (!confirm) return;
+    try {
+      await deletePost(id).unwrap();
+      toast.success("Post deleted successfully");
+      navigate("/");
+    } catch (error) {
+      toast.error("Failed to delete post");
+    }
   };
 
-  // Delete a comment
-  const deleteComment = async (commentId) => {
+  if (!post || !comments) return <h1>Loading...</h1>;
 
-  };
-
-  useEffect(() => {
-    init();
-  }, []);
-  console.log(data)
   return (
     <>
       <Navbar />
       <div className="p-8">
-        <div className="mb-2 flex items-center">
-          <div className="flex-none mr-2">
-            <img
-              className="w-[40px] h-[40px] rounded-full"
-              src={data?.userId?.profilePic}
-              alt=""
-            />
-          </div>
-          <div className="flex-none mr-2">{data?.userId?.username}</div>
-        </div>
-        {(currentUser.role === "admin" || currentUser._id === data?.userId?._id) && (
-            <BsTrash
-              className="text-red-500 cursor-pointer hover:text-red-700"
-              onClick={deletePost}
-            />
-          )}
-        <div className="ml-12 mb-2 text-lg font-bold">{data?.title}</div>
-        <div className="ml-12">{data.content}</div>
-        <div className="pl-12 mt-4 flex items-center">
-          {currentUser.role !== "user" && (
-            <div>
-              <div className="mr-4 relative">
-                <BsHandThumbsUp
-                  className="cursor-pointer"
-                  onClick={() => {
-                    likePost();
-                  }}
+        {post && (
+          <>
+            <div className="mb-2 flex items-center">
+              <img
+                className="w-[40px] h-[40px] rounded-full mr-2"
+                src={post.userId?.profilePic}
+                alt={post.userId?.username}
+              />
+              <span>{post.userId?.username}</span>
+              {(userInfo?.role === "admin" || userInfo?._id === post.userId?._id) && (
+                <BsTrash
+                  className="text-red-500 cursor-pointer hover:text-red-700 ml-2"
+                  onClick={handleDeletePost}
                 />
-                <div className="absolute -top-3 left-3 text-xs text-[orange]">
-                  {data?.likes?.length > 0 ? data?.likes?.length : ""}
-                </div>
-              </div>
+              )}
+            </div>
+            <h1 className="ml-12 text-lg font-bold">{post.title}</h1>
+            <p className="ml-12">{post.content}</p>
+            <div className="pl-12 mt-4 flex items-center">
+              <BsHandThumbsUp
+                className={`cursor-pointer ${isLiking ? "opacity-50" : ""}`}
+                onClick={handleLikePost}
+              />
+              <span className="ml-2">{post.likes?.length || 0}</span>
               <BsChatDots
-                className="cursor-pointer"
-                onClick={() => {
-                  setShowCommentModal(true);
-                }}
+                className="cursor-pointer ml-4"
+                onClick={() => setShowCommentModal(true)}
               />
             </div>
-          )}
-        </div>
-        {data?.comments?.length > 0 &&
-          data?.comments.map((item) => {
-            return (
-              <div key={item._id} className="ml-10">
-                <div className="mb-2 mt-4 flex items-center">
-                  <div className="flex-none mr-2">
-                    <img
-                      className="w-[40px] h-[40px] rounded-full"
-                      src={item.profilePic}
-                      alt=""
-                    />
-                  </div>
-                  <div className="flex-none mr-2">{item.username}</div>
-                </div>
-                {(currentUser.role === "admin" || currentUser._id === item.userId) && (
-                    <BsTrash
-                      className="text-red-500 cursor-pointer hover:text-red-700"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you want to delete this comment? This action cannot be undone."
-                          )
-                        ) {
-                          deleteComment(item._id);
-                        }
-                      }}
-                    />
-                  )}
-                <div className="ml-12">{item.content}</div>
-              </div>
-            );
-          })}
+          </>
+        )}
+        {comments.map((comment) => (
+          <div key={comment._id} className="ml-10">
+            <Link to={`/profile/${comment.userId?._id}`}>
+            <div className="mb-2 mt-4 flex items-center">
+              
+                <img
+                  className="w-[30px] h-[30px] rounded-full mr-2"
+                  src={comment.userId?.profilePic}
+                  alt={comment.userId?.username}
+                />
+                <span>{comment.userId?.username}</span>
+             
+              {(userInfo?.role === "admin" || userInfo?._id === comment.userId._id) && (
+                <BsTrash
+                  className="text-red-500 cursor-pointer hover:text-red-700 ml-2"
+                  onClick={() => handleDeleteComment(comment._id)}
+                />
+              )}
+            </div>
+            </Link>
+            <p>{comment.content}</p>
+          </div>
+        ))}
         {showCommentModal && (
-          <div className="w-1/2 p-2 absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 rounded bg-[#FFF]">
+          <div className="fixed inset-0 bg-white p-4 rounded shadow-md">
             <textarea
-              onChange={(e) => {
-                setComment(e.target.value);
-              }}
+              className="w-full border rounded p-2"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
               rows="6"
-              className="w-full border p-1"
             ></textarea>
-            <div className="flex justify-end pr-4">
+            <div className="flex justify-end mt-4">
               <button
-                className="border py-1 px-2 rounded mr-2 cursor-pointer"
-                onClick={() => {
-                  setShowCommentModal(false);
-                }}
+                className="border py-1 px-2 rounded mr-2"
+                onClick={() => setShowCommentModal(false)}
               >
                 Cancel
               </button>
               <button
-                className="bg-[#4945ed] text-white py-1 px-2 rounded cursor-pointer"
-                onClick={() => {
-                  commentPost();
-                }}
+                className={`bg-blue-500 text-white py-1 px-4 rounded ${isAddingComment ? "opacity-50" : ""}`}
+                onClick={handleAddComment}
+                disabled={isAddingComment}
               >
                 Submit
               </button>

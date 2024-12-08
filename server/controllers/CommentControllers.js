@@ -36,7 +36,7 @@ export const addComment = async (req, res) => {
         const { content } = req.body;
         const comment = new Comment({
             content,
-            userId: req.body.user._id,
+            userId: req.user._id,
             postId: pid
         });
         await comment.save();
@@ -84,4 +84,14 @@ export const getCommentsByPost = async (req, res) => {
         res.status(500).json({ msg: "Failed to fetch comments" });
     }
 };
+
+export const deleteCommentsByPost = async (req, res) => {
+    const { pid } = req.params;
+    try {
+        await Comment.deleteMany({ postId: pid });
+        res.status(200).json({ msg: "Comments deleted" });
+    } catch (error) {
+        res.status(500).json({ msg: "Failed to delete comments" });
+    }
+}
 

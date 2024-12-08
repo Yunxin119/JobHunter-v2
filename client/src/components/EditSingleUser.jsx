@@ -1,32 +1,33 @@
 import React, {useState} from 'react'
 import { MdEdit } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
-import { updateUser } from '../redux/tempUserReducer'
 import { toast } from 'react-toastify'
+import { useUpdateProfileMutation } from '../redux/userApiSlice'
 
 const EditSingleUser = ({user}) => {
     const [isOpen, setIsOpen ] = useState(false)
     const [username, setUsername] = useState(user.username || '');
-    const [isAdmin, setIsAdmin] = useState(user.isAdmin || '');
+    const [role, setRole] = useState(user.role);
+    const [gender, setGender] = useState(user.gender);
     const [email, setEmail] = useState(user.email || '');
-    const [password, setPassword] = useState(user.password || '');
-    const dispatch = useDispatch();
+    const [updateUser, {isLoading}] = useUpdateProfileMutation();
 
     const handleEdit = async (e) => {
         e.preventDefault();
-        if (!username || !isAdmin || !email || !password) {
+        if (!username || !role || !email || !gender) {
             toast.error('Please fill out all fields');
             return;
         }
         try {
             const updatedUser = {
-                id: user.id,
+                id: user._id,
                 username,
-                isAdmin,
+                role,
+                gender,
                 email,
-                password,
             };
-            dispatch(updateUser(updatedUser));
+            await updateUser(updatedUser).unwrap();
+            toast.success('User updated successfully!');
             setIsOpen(false);
         } catch (error) {
             console.error(error);
@@ -78,12 +79,29 @@ const EditSingleUser = ({user}) => {
                     <span className="label-text">Role</span>
                     </label>
                     <select
-                    className="select select-bordered w-full"
-                    value={isAdmin}
-                    onChange={(e) => setIsAdmin(e.target.value)}
+                        className="input"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
                     >
-                    <option value={true}>Admin</option>
-                    <option value={false}>User</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="superuser">Superuser</option>
+                    </select>
+                </div>
+              </div>
+              <div className='flex flex-row justify-between gap-2'>
+                <div className="form-control mt-1 w-full">
+                    <label className="label">
+                    <span className="label-text">Gender</span>
+                    </label>
+                    <select
+                        className="input"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                    >
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="other">Other</option>
                     </select>
                 </div>
               </div>

@@ -12,10 +12,20 @@ const postApiSlice = apiSlice.injectEndpoints({
         }),
         getUserPosts: builder.query({
             query: (id) => ({
-                url: Post_URL + '/user/'+id,
+                url: Post_URL + '/user/' + id,
             }),
-            providesTags: ['Post'],
+            providesTags: (result, error, id) =>
+                result
+                    ? [...result.posts.map(({ _id }) => ({ type: 'Post', id: _id })), { type: 'Post', id }]
+                    : [{ type: 'Post', id }],
             keepUnusedDataFor: 5,
+        }),
+        deletePost: builder.mutation({
+            query: (id) => ({
+                url: Post_URL + '/' + id,
+                method: 'DELETE',
+            }),
+            invalidatesTags: (result, error, id) => [{ type: 'Post', id }],
         }),
         addPost:builder.mutation({
             query: (body) => ({
@@ -33,20 +43,27 @@ const postApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Post']
         }),
-        deletePost: builder.mutation({
-            query: (id) => ({
-                url: Post_URL + '/'+id,
-                method: 'DELETE'
-            }),
-            invalidatesTags: ['Post']
-        }),
         getPostsByJob: builder.query({
             query: (jobId) => ({
                 url: Post_URL + '/job/'+jobId,
             }),
             providesTags: ['Post'],
             keepUnusedDataFor: 5,
-        })
+        }),
+        getPostById: builder.query({
+            query: (id) => ({
+                url: Post_URL + '/'+id,
+            }),
+            providesTags: ['Post'],
+            keepUnusedDataFor: 5,
+        }),
+        likePost: builder.mutation({
+            query: (id) => ({
+                url: Post_URL + '/likePost/'+id,
+                method: 'POST',
+            }),
+            invalidatesTags: ['Post']
+        }),
     })
 })
 
@@ -56,7 +73,9 @@ export const {
     useUpdatePostMutation, 
     useDeletePostMutation, 
     useGetUserPostsQuery,
-    useGetPostsByJobQuery
+    useGetPostsByJobQuery,
+    useGetPostByIdQuery,
+    useLikePostMutation
 } = postApiSlice;
 
 export default postApiSlice;
