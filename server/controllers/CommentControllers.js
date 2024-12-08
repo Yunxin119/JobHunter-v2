@@ -33,10 +33,10 @@ export const addComment = async (req, res) => {
             return res.status(404).json({ msg: "Post not found" });
         }
         console.log(post)
-        const { content } = req.body;
+        const { content, userId } = req.body;
         const comment = new Comment({
             content,
-            userId: req.user._id,
+            userId: req.body.user._id,
             postId: pid
         });
         await comment.save();

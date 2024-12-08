@@ -49,7 +49,7 @@ const PostDetail = () => {
       return;
     }
     try {
-      await addComment({ pid: id, content: comment }).unwrap();
+      await addComment({ pid: id, user: userInfo, content: comment }).unwrap();
       toast.success("Comment added successfully");
       setComment("");
       setShowCommentModal(false);
@@ -124,16 +124,18 @@ const PostDetail = () => {
         )}
         {comments.map((comment) => (
           <div key={comment._id} className="ml-10">
-            <Link to={`/profile/${comment.userId?._id}`}>
+            
             <div className="mb-2 mt-4 flex items-center">
-              
+              <Link to={`/profile/${comment.userId?._id}`}>
+              <div className="flex items-center">
                 <img
                   className="w-[30px] h-[30px] rounded-full mr-2"
                   src={comment.userId?.profilePic}
                   alt={comment.userId?.username}
                 />
                 <span>{comment.userId?.username}</span>
-             
+             </div>
+             </Link>
               {(userInfo?.role === "admin" || userInfo?._id === comment.userId._id) && (
                 <BsTrash
                   className="text-red-500 cursor-pointer hover:text-red-700 ml-2"
@@ -141,12 +143,11 @@ const PostDetail = () => {
                 />
               )}
             </div>
-            </Link>
             <p>{comment.content}</p>
           </div>
         ))}
         {showCommentModal && (
-          <div className="fixed inset-0 bg-white p-4 rounded shadow-md">
+          <div className="fixed inset-0 blur-window p-4 rounded shadow-md">
             <textarea
               className="w-full border rounded p-2"
               value={comment}
