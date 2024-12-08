@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -16,9 +17,11 @@ import JobSearch from "./pages/JobSearch";
 import SearchResults from "./pages/SearchResults";
 import JobDetails from "./pages/JobDetails";
 import PostDetail from './pages/PostDetail';
+import EditPosts from './pages/admin/EditPosts';
 function App() {
   const { userInfo } = useSelector((state) => state.authReducer)
   const isLoggedIn = userInfo !== null;
+  const isAdmin = userInfo?.role === 'admin';
   return (
     
       <div className='w-screen h-screen overflow-y-scroll overflow-x-hidden'>
@@ -28,7 +31,8 @@ function App() {
         <Route path='/login' element={isLoggedIn ? <Home /> : <Login />} />
         <Route path='/register' element={isLoggedIn ? <Home /> : <Register />} />
         <Route path='/applications' element={isLoggedIn ? <Dashboard /> : <Login />} />
-        <Route path='/users' element={<EditUsers />} />
+        <Route path='/users' element={isAdmin? <EditUsers /> : <Navigate to="/" />} />
+        <Route path='/posts' element={isAdmin ? <EditPosts /> : <Navigate to="/" />} />
         <Route path="/profile" element={isLoggedIn ? <Profile /> : <Login />} />
         <Route path='/profile/:id' element={<Profile />} />
         <Route path='/calendar' element={<Calendar />} />
