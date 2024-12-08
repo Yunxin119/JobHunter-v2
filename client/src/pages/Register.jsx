@@ -10,12 +10,13 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [username, setUsername] = useState('')
     const [gender, setGender] = useState('')
+    const [role, setRole] = useState('')
     const [register, { isLoading, error }] = useRegisterMutation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const submitHandler = async (e) => {
         e.preventDefault();
-        const res = await register({ email, password, username, confirmPassword, gender }).unwrap();
+        const res = await register({ email, password, username, confirmPassword, gender, role }).unwrap();
         console.log(res);
         dispatch(setCredential(res));
         navigate('/')
@@ -87,6 +88,21 @@ const Register = () => {
                         <option value="female">Female</option>
                         <option value="male">Male</option>
                         <option value="other">Do not wish to answer</option>
+                    </select>
+                    {/* Form Role */}
+                    <label className='label py-2'>
+                        <span>Role</span>
+                    </label>
+                    <select
+                        className="input"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        required
+                    >
+                        <option value="" disabled>Select Role</option>
+                        <option value="user" selected>user</option>
+                        <option value="superuser">superuser</option>
+                        <option value="admin">admin</option>
                     </select>
                     {/* Form: Register direction */}
                     <div className='p-2 items-center justify-center'>

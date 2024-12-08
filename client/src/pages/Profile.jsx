@@ -11,6 +11,7 @@ import UserComments from '../components/profile/UserComments'
 
 const Profile = () => {
   const { userInfo } = useSelector((state) => state.authReducer)
+  console.log(userInfo)
   const { id }= useParams();
   const profileId = id || userInfo?._id;
   const { data: profileUser, isLoading, error } = useGetProfileQuery(profileId);

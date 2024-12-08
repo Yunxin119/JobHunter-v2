@@ -19,7 +19,7 @@ router.route("/").get(getAllPosts).post(protectMiddleware, createPost);
 router.route("/:id").get(getPost).put(protectMiddleware, updatePost).delete(protectMiddleware, deletePost);
 router.route("/user/:id").get(getPostsByUser);
 router.route("/job/:jobId").get(getPostsByJob); // Retrieve all posts based on `jobId`.
-router.route('/post/:id').get(getPost);// Retrieve a single post based on `postId`.
+// router.route('/post/:id').get(getPost);// Retrieve a single post based on `postId`.
 router.route('/likePost/:id').post(likePost);// Support this post.
 router.route('/commentPost/:id').post(commentPost);// Support this post.
 export default router;

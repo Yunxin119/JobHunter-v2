@@ -16,9 +16,37 @@ const commentApiSlice = apiSlice.injectEndpoints({
                 method: 'DELETE',
             }),
             invalidatesTags: ['Comment'],
+        }),
+        addComment: builder.mutation({
+            query: ({ pid, content }) => ({
+                url: Comment_URL + '/post/'+pid,
+                method: 'POST',
+                body: { content },
+            }),
+            invalidatesTags: ['Comment'],
+        }),
+        getCommentsByPost: builder.query({
+            query: (pid) => ({
+                url: Comment_URL + '/post/'+pid,
+            }),
+            providesTags: ['Comment'],
+            keepUnusedDataFor: 5,
+        }),
+        deleteCommentsByPost: builder.mutation({
+            query: (pid) => ({
+                url: Comment_URL + '/post/'+pid,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Comment'],
         })
     }),
 })
 
-export const { useGetUserCommentsQuery, useDeleteUserCommentMutation } = commentApiSlice;
+export const { 
+    useGetUserCommentsQuery, 
+    useDeleteUserCommentMutation, 
+    useAddCommentMutation, 
+    useGetCommentsByPostQuery,
+    useDeleteCommentsByPostMutation
+ } = commentApiSlice;
 export default commentApiSlice;
