@@ -27,6 +27,7 @@ export const getCommentsByUser = async (req, res) => {
 export const addComment = async (req, res) => {
     try {
         const { pid } = req.params;
+        console.log(pid)
         const post = await Post.findById(pid)
         if (!post) {
             return res.status(404).json({ msg: "Post not found" });
@@ -35,7 +36,7 @@ export const addComment = async (req, res) => {
         const { content } = req.body;
         const comment = new Comment({
             content,
-            userId: req.user._id,
+            userId: req.body.user._id,
             postId: pid
         });
         await comment.save();

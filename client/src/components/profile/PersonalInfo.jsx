@@ -1,7 +1,7 @@
 import { MdEdit } from 'react-icons/md';
 import { FaCheck } from 'react-icons/fa';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../redux/tempUserReducer';
 import { useUpdateProfileMutation } from '../../redux/userApiSlice';
 import { toast } from 'react-toastify';
@@ -15,7 +15,9 @@ export default function PersonalInfo({ isCurrentUser, user }) {
     const [password, setPassword] = useState('');
     const [gender, setGender] = useState(user.gender);
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [role, setRole] = useState(user.role);
     const [editProfile, setEditProfile] = useState(false);
+    const currentUser = useSelector((state) => state.authReducer.userInfo);
 
     const handleEditProfile = async () => {
         if (!editProfile) {
@@ -26,10 +28,14 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                 return;
             }
             try {
-                const res = await updateProfile({ id: user._id, username, email, password, confirmPassword, gender }).unwrap();
+                const res = await updateProfile({ id: user._id, username, email, password, confirmPassword, gender, role }).unwrap();
                 toast.success('Profile updated');
                 setEditProfile(false);
-                dispatch(setCredential(res));
+                if (isCurrentUser){
+                    dispatch(setCredential(res));
+                } else {
+                    dispatch(updateUser(res));
+                }
             } catch (error) {
                 toast.error('Failed to update profile');
                 console.error('Error updating profile:', error);
@@ -42,13 +48,17 @@ export default function PersonalInfo({ isCurrentUser, user }) {
             <div className="px-4 py-6 sm:px-6">
                 <div className="flex flex-row items-center justify-between">
                     <h3 className="text-base font-semibold text-gray-900">User Information</h3>
-                    <button
-                        type="button"
-                        className={`rounded-md text-sm ${!editProfile ? 'text-blue-500 hover:text-blue-400' : 'text-gray-500 hover:text-gray-400'}`}
-                        onClick={handleEditProfile}
-                    >
-                        {editProfile ? <FaCheck /> : <MdEdit />}
-                    </button>
+                    {(currentUser.role === "admin" || isCurrentUser) && (
+                        <button
+                            type="button"
+                            className={`rounded-md text-sm ${
+                                !editProfile ? "text-blue-500 hover:text-blue-400" : "text-gray-500 hover:text-gray-400"
+                            }`}
+                            onClick={handleEditProfile}
+                        >
+                            {editProfile ? <FaCheck /> : <MdEdit />}
+                        </button>
+                    )}
                 </div>
                 <p className="mt-1 max-w-2xl text-sm/6 text-gray-500">Personal details and application stats.</p>
             </div>
@@ -84,6 +94,25 @@ export default function PersonalInfo({ isCurrentUser, user }) {
                             </dd>
                         </div>
                     )}
+
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-900">Role</dt>
+                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2">
+                            {editProfile ? (
+                                <select
+                                    className="form-control profile-input"
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                >
+                                    <option value="user">User</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="superuser">Superuser</option>
+                                </select>
+                            ) : (
+                                user.role
+                            )}
+                        </dd>
+                    </div>
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-4 sm:gap-2 sm:px-6">
                         <dt className="label-text">Gender</dt>

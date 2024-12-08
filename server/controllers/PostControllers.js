@@ -37,38 +37,30 @@ export const getPost = async (req, res) => {
 
 // Function to create a post
 export const createPost = async (req, res) => {
-    console.log(req.body);
     const { title, content, jobId, userId } = req.body;
 
-    // Check required fields
-    if (!jobId || !userId || !content || !title) {
-        console.log("Job ID, User ID, title, and content are required.");
-        return res.status(400).json({ msg: "Job ID, User ID, title, and content are required." });
+    // 检查必填字段
+    if (!jobId || !userId || !content) {
+        return res.status(400).json({ msg: "Job ID, User ID, and content are required." });
     }
 
     try {
-        // Verify user exists
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ msg: "User not found." });
-        }
-
-        // Create the post
+        // 创建帖子
         const post = await Post.create({
             title,
             content,
-            userId,
+            userId, // 从请求体中获取用户 ID
             jobId,
         });
 
-        // Update user's posts list
-        user.posts.push(post._id);
-        await user.save();
+        // 更新用户的帖子列表
+        const user = await User.findById(userId);
+        if (user) {
+            user.posts.push(post._id);
+            await user.save();
+        }
 
-        // Populate user details for the post
-        const populatedPost = await Post.findById(post._id).populate("userId", "username profilePic");
-
-        res.status(201).json({ post: populatedPost });
+        res.status(201).json({ post });
     } catch (error) {
         console.error("Error creating post:", error.message);
         res.status(500).json({ msg: "Failed to create post." });
@@ -103,7 +95,7 @@ export const deletePost = async (req, res) => {
         if (!post) {
             return res.status(404).json({ msg: "Post not found" });
         }
-        if (post.userId.toString() !== req.user._id.toString() && req.user.role !== "Admin") {
+        if (post.userId.toString() !== req.user._id.toString() && req.user.role !== "admin") {
             return res.status(401).json({ msg: "You are not authorized to delete this post" });
         }
         await Post.deleteOne({ _id: req.params.id });
@@ -119,15 +111,16 @@ export const deletePost = async (req, res) => {
 
 // Function to like a post
 export const likePost = async (req, res) => {
+    const {user} = req.body;
     try {
         const post = await Post.findById(req.params.id);
         if (!post) {
             return res.status(404).json({ msg: "Post not found" });
         }
-        if (post.likes.includes(req.user._id)) {
+        if (post.likes.includes(user._id)) {
             return res.status(400).json({ msg: "You have already liked this post" });
         }
-        post.likes.push(req.user._id);
+        post.likes.push(user._id);
         await post.save();
         res.status(200).json({ post });
     } catch (error) {
@@ -154,11 +147,11 @@ export const unlikePost = async (req, res) => {
 };
 
 export const getPostsByJob = async (req, res) => {
-    const { jobId } = req.params; // 获取 jobId
+    const { jobId } = req.params; // get jobId
     console.log("Fetching posts for jobId:", jobId);
 
     try {
-        // 查询所有与 jobId 相关的帖子，并填充 userId 的基本信息
+        // Query all posts related to `jobId` and populate the basic information of `userId`.
         const posts = await Post.find({ jobId })
             .populate("userId", "username profilePic")
             .populate("comments");
@@ -173,3 +166,26 @@ export const getPostsByJob = async (req, res) => {
         res.status(500).json({ msg: "Failed to fetch posts." });
     }
 };
+export const commentPost = async (req,res)=>{
+    
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({ msg: "Post not found" });
+        }
+        const comment = new Comment({
+            content:req.body.comment,
+            userId: req.body.user._id,
+            postId: req.params.id,
+            username:req.body.user.username,
+            profilePic:req.body.user.profilePic
+        });
+        await comment.save();
+        post.comments.push(comment._id.toString());
+        await post.save();
+        res.status(200).json({ post });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ msg: "Failed to comment this post" });
+    }
+}
