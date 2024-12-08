@@ -2,6 +2,7 @@ import { Disclosure, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/r
 import { FaBars, FaXmark, FaPlus } from "react-icons/fa6";
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { logout } from '../redux/authReducer';
 import { useLogoutMutation } from '../redux/userApiSlice';
 import { toast } from 'react-toastify';
@@ -11,9 +12,11 @@ const Navbar = () => {
     const { userInfo } = useSelector((state) => state.authReducer)
     const [logoutUser, {isLoading}] = useLogoutMutation();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const handleSignOut = async () => {
       await logoutUser();
       dispatch(logout())
+      navigate('/')
       toast.success('You have been signed out')
     }
     return (
@@ -70,7 +73,7 @@ const Navbar = () => {
                                 Profile
                             </Link>
                             </MenuItem>
-                            {userInfo.isAdmin && (
+                            {userInfo.role === "admin" && (
                               <MenuItem>
                               <Link
                               to={'/users'}

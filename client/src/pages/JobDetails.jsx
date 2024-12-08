@@ -9,7 +9,8 @@ import { toast } from "react-toastify";
 import { useAddPostMutation } from "../redux/postApiSlice"; 
 import { useGetPostsByJobQuery } from "../redux/postApiSlice";
 import { useGetCompanyQuery } from "../redux/companyApiSlice";
-import { set } from "mongoose";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../config";
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -26,12 +27,13 @@ const JobDetails = () => {
   const [isApplied, setIsApplied] = useState(false);
   const { data: posts = [], refetch } = useGetPostsByJobQuery(id);
   const { data: companies = [] } = useGetCompanyQuery();
+  const navigate = useNavigate();
 
   // Fetch job details
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/jobs/details/${id}`);
+        const response = await axios.get(`${BASE_URL}/api/jobs/details/${id}`);
         setJobDetails(response.data);
       } catch (error) {
         console.error("Error fetching job details:", error.message);
@@ -156,6 +158,7 @@ const JobDetails = () => {
     <div className="screen">
       <Navbar />
       <div className="container mx-auto p-8">
+        <button className="bg-transparent sec-text hover:prime-text py-2" onClick={() => {navigate(-1)}}>Back</button>
         {/* Job Details */}
         <div className="p-6 blur-window rounded-lg flex flex-row gap-2">
           <div className="w-[70%] border-r pr-4 border-gray-300">

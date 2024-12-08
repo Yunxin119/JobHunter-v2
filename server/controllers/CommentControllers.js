@@ -14,8 +14,9 @@ export const getAllComments = async (req, res) => {
 
 // get commments by userId
 export const getCommentsByUser = async (req, res) => {
+    const { uid } = req.params;
     try {
-        const comments = await Comment.find({ userId: req.params.id }).populate("postId").populate("userId", "username profilePic");
+        const comments = await Comment.find({ userId: uid }).populate("postId").populate("userId", "username profilePic");
         res.status(200).json({ comments });
     } catch (error) {
         res.status(500).json({ msg: "Failed to fetch comments" });
@@ -76,7 +77,7 @@ export const getCommentsByPost = async (req, res) => {
     }
     console.log(post)
     try {
-        const comments = await Comment.find({ postId: req.params.id }).populate("userId", "username profilePic");
+        const comments = await Comment.find({ postId: pid }).populate("userId", "username profilePic");
         res.status(200).json({ comments });
     } catch (error) {
         res.status(500).json({ msg: "Failed to fetch comments" });
