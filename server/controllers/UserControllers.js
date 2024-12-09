@@ -195,7 +195,7 @@ export const sendVerificationEmail = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-        const verificationUrl = `/verify-email?token=${token}`;
+        const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
 
         const transporter = nodemailer.createTransport({
             service: "gmail",
