@@ -23,7 +23,7 @@ const SingleCommentItem = ({ comment, isCurrentUser, onCommentDeleted }) => {
     console.log(post)
 
     return (
-        <div className="flex flex-col h-48 company-card rounded-lg p-3 bg-white relative">
+        <div className="flex flex-col h-48 company-card rounded-lg p-3 backdrop-blur-md relative">
             {isCurrentUser && (
                 <button 
                     className="btn btn-sm btn-ghost absolute top-2 right-2 text-gray-500"
