@@ -31,7 +31,14 @@ const UserPosts = ({ user, isCurrentUser }) => {
                     <SinglePostItem key={post._id} post={post} isCurrentUser={isCurrentUser} onPostDeleted={handlePostDeleted}/>
                 ))
             ) : (
-                <div className="text-center text-gray-700 text-2xl">No posts found</div>
+                 isCurrentUser && userInfo.role === 'user' ? (
+                    <div className='flex flex-col items-start bg-gray-200/45 backdrop-blur-md p-4 rounded-lg w-full'>
+                        <div className="text-center text-gray-700 text-2xl">Verify your email to write posts</div>
+                        <div className='text-gray-500 text-md'>Click edit profile &rarr; Select role to be Superuser &rarr; Verify</div>
+                    </div>
+                ) : (
+                    <div className="text-center text-gray-700 text-2xl">No posts found</div>
+                )
             )}
         </div>
     </div>

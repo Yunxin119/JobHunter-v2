@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { setCredential } from '../redux/authReducer'
 import { useRegisterMutation } from '../redux/userApiSlice'
 import { toast } from 'react-toastify'
+import { ADMIN_PASSCODE } from '../config'
 
 const Register = () => {
     const [email, setEmail] = useState('')
@@ -12,6 +13,7 @@ const Register = () => {
     const [username, setUsername] = useState('')
     const [gender, setGender] = useState('')
     const [role, setRole] = useState('user')
+    const [adminVerification, setAdminVerification] = useState('')
     const [register, { isLoading, error }] = useRegisterMutation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -19,6 +21,10 @@ const Register = () => {
         e.preventDefault();
         if (!email || !password || !confirmPassword || !username || !role || !gender) {
             toast.error('Please fill in all fields');
+        }
+        if (role === 'admin' && adminVerification !== ADMIN_PASSCODE) {
+            toast.error('Invalid Admin Passcode');
+            return;
         }
         const res = await register({ email, password, username, confirmPassword, gender, role }).unwrap();
         console.log(res);
@@ -106,8 +112,16 @@ const Register = () => {
                         <option value="" disabled>Select Role</option>
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
-                        <option value="superuser">Superuser</option>
+                        {/* <option value="superuser">Superuser</option> */}
                     </select>
+                    { role === "admin" ? (
+                            <>
+                                <label className='label py-2'> 
+                                    <span>Admin Passcode</span>
+                                </label>
+                                <input className='input' type='text' value={adminVerification} onChange={(e)=> setAdminVerification(e.target.value)} placeholder='Admin Passcode'/>
+                            </>
+                        ) : null}
                     {/* Form: Register direction */}
                     <div className='p-2 items-center justify-center'>
                         <Link to='/login' className='text-blue-400 hover:text-blue-700'>
