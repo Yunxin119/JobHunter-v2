@@ -34,10 +34,13 @@ const PostDetail = () => {
   // Handle Like Post
   const handleLikePost = async () => {
     try {
-      await likePost(id).unwrap();
+      await likePost(
+        { postId: id, user: userInfo }
+      ).unwrap();
       toast.success("Post liked successfully");
       refetchPost();
     } catch (error) {
+      console.log(error)
       toast.error(error?.data?.message || "Failed to like post");
     }
   };
@@ -88,40 +91,45 @@ const PostDetail = () => {
   if (!post || !comments) return <h1>Loading...</h1>;
 
   return (
-    <>
+    <div className="screen">
       <Navbar />
-      <div className="p-8">
-        {post && (
-          <>
-            <div className="mb-2 flex items-center">
-              <img
-                className="w-[40px] h-[40px] rounded-full mr-2"
-                src={post.userId?.profilePic}
-                alt={post.userId?.username}
-              />
-              <span>{post.userId?.username}</span>
-              {(userInfo?.role === "admin" || userInfo?._id === post.userId?._id) && (
-                <BsTrash
-                  className="text-red-500 cursor-pointer hover:text-red-700 ml-2"
-                  onClick={handleDeletePost}
+      <div className="p-4">
+        <div className="relative p-4 left-1/2 transform -translate-x-1/2 flex flex-col items-start mt-4 backdrop-blue-md w-[80%] rounded-xl mb-3 backdrop-blur-md bg-white/40 dark:bg-black/45">
+          {post && (
+            <>
+              <div className="mb-2 flex items-center">
+                <Link to={`/profile/${post.userId?._id}`}>
+                  <div className="flex flex-row items-center">
+                    <img
+                      className="w-[40px] h-[40px] rounded-full mr-2"
+                      src={post.userId?.profilePic}
+                      alt={post.userId?.username}
+                    />
+                    <span className="label-text text-lg font-bold">{post.userId?.username}</span>
+                  </div>
+                </Link>
+                {(userInfo?.role === "admin" || userInfo?._id === post.userId?._id) && (
+                  <BsTrash
+                    className="text-red-500 cursor-pointer hover:text-red-700 ml-2"
+                    onClick={handleDeletePost}
+                  />
+                )}
+              </div>
+              <h1 className="ml-12 text-lg font-bold prime-text">{post.title}</h1>
+              <p className="ml-12 sec-text">{post.content}</p>
+              <div className="pl-12 mt-4 flex items-center">
+                <BsHandThumbsUp
+                  className={`cursor-pointer ${isLiking ? "opacity-50" : ""}`}
+                  onClick={handleLikePost}
                 />
-              )}
-            </div>
-            <h1 className="ml-12 text-lg font-bold">{post.title}</h1>
-            <p className="ml-12">{post.content}</p>
-            <div className="pl-12 mt-4 flex items-center">
-              <BsHandThumbsUp
-                className={`cursor-pointer ${isLiking ? "opacity-50" : ""}`}
-                onClick={handleLikePost}
-              />
-              <span className="ml-2">{post.likes?.length || 0}</span>
-              <BsChatDots
-                className="cursor-pointer ml-4"
-                onClick={() => setShowCommentModal(true)}
-              />
-            </div>
-          </>
-        )}
+                <span className="ml-2">{post.likes?.length || 0}</span>
+                <BsChatDots
+                  className="cursor-pointer ml-4"
+                  onClick={() => setShowCommentModal(true)}
+                />
+              </div>
+            </>
+          )}
         {comments.map((comment) => (
           <div key={comment._id} className="ml-10">
             
@@ -133,46 +141,50 @@ const PostDetail = () => {
                   src={comment.userId?.profilePic}
                   alt={comment.userId?.username}
                 />
-                <span>{comment.userId?.username}</span>
+                <span className="prime-text">{comment.userId?.username}</span>
              </div>
              </Link>
               {(userInfo?.role === "admin" || userInfo?._id === comment.userId._id) && (
                 <BsTrash
-                  className="text-red-500 cursor-pointer hover:text-red-700 ml-2"
+                  className="text-red-500 cursor-pointer hover:text-red-700 ml-3"
                   onClick={() => handleDeleteComment(comment._id)}
                 />
               )}
             </div>
-            <p>{comment.content}</p>
+            <p className="sec-text">{comment.content}</p>
           </div>
         ))}
         {showCommentModal && (
-          <div className="fixed inset-0 blur-window p-4 rounded shadow-md">
-            <textarea
-              className="w-full border rounded p-2"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              rows="6"
-            ></textarea>
-            <div className="flex justify-end mt-4">
-              <button
-                className="border py-1 px-2 rounded mr-2"
-                onClick={() => setShowCommentModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className={`bg-blue-500 text-white py-1 px-4 rounded ${isAddingComment ? "opacity-50" : ""}`}
-                onClick={handleAddComment}
-                disabled={isAddingComment}
-              >
-                Submit
-              </button>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+            <div className="edit">
+            <h2 className="text-2xl font-bold mb-4 dark:text-gray-200">Comment</h2>
+              <textarea
+                className="textfield"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                rows="6"
+              ></textarea>
+              <div className="flex justify-end mt-4">
+                <button
+                  className="btn-secondary mr-2"
+                  onClick={() => setShowCommentModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={`btn-primary ${isAddingComment ? "opacity-50" : ""}`}
+                  onClick={handleAddComment}
+                  disabled={isAddingComment}
+                >
+                  Submit
+                </button>
+              </div>
             </div>
           </div>
         )}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

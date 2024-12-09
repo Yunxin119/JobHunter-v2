@@ -17,7 +17,6 @@ const Filter = ({statusFilter, setStatusFilter, filteredCompanies}) => {
       <option value="Interview2">Interview2</option>
       <option value="Interview3">Interview3</option>
       <option value="Rejected">Rejected</option>
-      <option value="In Progress">In Progress</option>
     </select>
     <span className="ml-3 text-gray-200 text-sm">Showing {filteredCompanies.length} companies</span>
   </div>
