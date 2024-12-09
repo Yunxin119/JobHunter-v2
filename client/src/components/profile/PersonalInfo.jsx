@@ -48,7 +48,7 @@ export default function PersonalInfo({ isCurrentUser, user }) {
             <div className="px-4 py-6 sm:px-6">
                 <div className="flex flex-row items-center justify-between">
                     <h3 className="text-base font-semibold prime-text">User Information</h3>
-                    {(currentUser.role === "admin" || isCurrentUser) && (
+                    {(currentUser?.role === "admin" || isCurrentUser) && (
                         <button
                             type="button"
                             className={`rounded-md text-sm ${

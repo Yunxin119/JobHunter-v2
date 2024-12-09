@@ -1,13 +1,13 @@
 import React from 'react'
-import { useGetCompanyQuery } from '../../redux/companyApiSlice';
+import { useGetCompanyByUserIdQuery } from '../../redux/companyApiSlice';
 
 const Stats = ({user, isCurrentUser}) => {
-  const { data: companies, isLoading, isError } = useGetCompanyQuery();
+  const { data: companies, isLoading, isError } = useGetCompanyByUserIdQuery(user._id);
   const validCompanies = companies || [];
-    const oa = validCompanies.filter((c) => c.status === 'OA').length;
-    const interview = validCompanies.filter((c) => c.status === 'Interview1' || c.status === 'Interview2' || c.status==='Interview3').length;
-    const rejected = validCompanies.filter((c) => c.status === 'Rejected').length;
-    const offer = validCompanies.filter((c) => c.status === 'Offer').length;
+  const oa = validCompanies.filter((c) => c.status === 'OA').length;
+  const interview = validCompanies.filter((c) => c.status === 'Interview1' || c.status === 'Interview2' || c.status==='Interview3').length;
+  const rejected = validCompanies.filter((c) => c.status === 'Rejected').length;
+  const offer = validCompanies.filter((c) => c.status === 'Offer').length;
   return (
     <>
       <div className='h-full w-1/2 rounded-md flex flex-col items-center justify-between'>

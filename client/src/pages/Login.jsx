@@ -34,7 +34,7 @@ const Login = () => {
                 <h1 className='text-3xl font-bold text-center text-gray-200'>
                     Login
                     <span className='text-blue-600'>
-                        OfferHunter</span>    
+                        JobHunter</span>    
                 </h1>
                 {/* Form */}
                 <form className='flex flex-col p-2 mt-2' onSubmit={submitHandler}>

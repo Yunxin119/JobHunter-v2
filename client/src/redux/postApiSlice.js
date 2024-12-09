@@ -65,6 +65,14 @@ const postApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Post']
         }),
+        unlikePost: builder.mutation({
+            query: (body) => ({
+                url: Post_URL + '/unlikePost/'+body.postId,
+                method: 'POST',
+                body
+            }),
+            invalidatesTags: ['Post']
+        }),
     })
 })
 
@@ -76,7 +84,8 @@ export const {
     useGetUserPostsQuery,
     useGetPostsByJobQuery,
     useGetPostByIdQuery,
-    useLikePostMutation
+    useLikePostMutation,
+    useUnlikePostMutation,
 } = postApiSlice;
 
 export default postApiSlice;

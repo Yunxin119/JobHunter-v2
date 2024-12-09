@@ -118,6 +118,22 @@ export const deleteCompany = async (req, res) => {
     }
 };
 
+// @DESC: Get a company by User ID
+// PATH: /api/companies/user/:id
+// METHOD: GET
+// PUBLIC
+export const getCompaniesByUserId = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await User.findById(id).populate("applications");
+        if (!user) return res.status(404).json({ message: "User not found" });
+        res.json(user.applications);
+    } catch (error) {
+        console.error("Get Companies By User ID Error:", error);
+        res.status(500).json({ message: "Failed to retrieve companies, please try again :(" });
+    }
+}
+
 
 // Utils: Image Domain Helper
 const getImage = async (name) => {

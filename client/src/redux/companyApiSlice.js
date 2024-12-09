@@ -33,6 +33,12 @@ export const companyApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Company']
         }),
+        getCompanyByUserId: builder.query({
+            query: (id) => ({
+                url: COMPANY_URL + '/user/'+id
+            }),
+            providesTags: ['Company']
+        })
     })
 });
 
@@ -40,6 +46,7 @@ export const {
     useGetCompanyQuery, 
     useAddCompanyMutation, 
     useUpdateCompanyMutation, 
-    useDeleteCompanyMutation 
+    useDeleteCompanyMutation,
+    useGetCompanyByUserIdQuery
 } = companyApiSlice;
 export default companyApiSlice;

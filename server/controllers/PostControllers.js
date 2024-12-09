@@ -128,18 +128,20 @@ export const likePost = async (req, res) => {
 
 // Function to unlike a post
 export const unlikePost = async (req, res) => {
+    const { user, postId } = req.body;
     try {
-        const post = await Post.findById(req.params.id);
+        const post = await Post.findById(postId);
         if (!post) {
             return res.status(404).json({ msg: "Post not found" });
         }
-        if (!post.likes.includes(req.user._id)) {
+        if (!post.likes.includes(user._id)) {
             return res.status(400).json({ msg: "You have already unliked this post" });
         }
-        post.likes = post.likes.filter((like) => like.toString() !== req.user._id.toString());
+        post.likes = post.likes.filter((like) => like.toString() !== user._id.toString());
         await post.save();
         res.status(200).json({ post });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ msg: "Failed to unlike post" });
     }
 };
