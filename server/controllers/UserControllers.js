@@ -5,6 +5,7 @@ import generateTokenAndCookie from "../middleware/generateTokenAndCookie.js";
 import Comment from "../models/CommentModel.js";
 import Post from "../models/PostModel.js";
 import Company from "../models/CompanyModel.js";
+import nodemailer from "nodemailer";
 
 // Function to get all users
 export const getAllUsers = async (req, res) => {
@@ -50,6 +51,7 @@ export const register = async (req, res) => {
         await newUser.save();
 
         const token = generateTokenAndCookie(newUser._id, res);
+        newUser.token = token;
         
         res.status(201).json(newUser.toJSON());
     } catch (error) {
@@ -70,6 +72,7 @@ export const login = async (req, res) => {
         if (!isMatch) return res.status(401).json({ msg: "Invalid email or password" });
 
         const token = generateTokenAndCookie(user._id, res);
+        user.token = token;
         console.log("User logged in");
         res.status(200).json(user.toJSON());
     } catch (error) {
@@ -137,6 +140,7 @@ export const editProfile = async (req, res) => {
         await user.save();
 
         const token = generateTokenAndCookie(user._id, res);
+        user.token = token;
         res.status(200).json(user.toJSON());
     } catch (error) {
         res.status(400).json({ msg: error.message });
@@ -144,6 +148,7 @@ export const editProfile = async (req, res) => {
     }
 };
 
+// Delete user
 export const deleteUser = async (req, res) => {
     const { id } = req.params;
     try {
@@ -157,5 +162,62 @@ export const deleteUser = async (req, res) => {
         res.status(200).json({ msg: "User deleted" });
     } catch (error) {
         res.status(500).json({ msg: error.message });
+    }
+};
+
+// Email verification
+export const verifyEmail = async (req, res) => {
+    try {
+        const { token } = req.query;
+        if (!token) return res.status(400).json({ msg: "Token is required" });
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id);
+        if (!user) return res.status(404).json({ msg: "User not found" });
+
+        user.isVerified = true;
+        user.role = "superuser";
+        await user.save();
+
+        res.status(200).json({ msg: "Email verified successfully. You are now a superuser." });
+    } catch (error) {
+        console.error("Error verifying email: ", error);
+        res.status(400).json({ msg: "Invalid or expired token" });
+    }
+};
+
+// Verify email
+export const sendVerificationEmail = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ msg: "User not found" });
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+        const verificationUrl = `/verify-email?token=${token}`;
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: "Email Verification",
+            text: `Please click the link below to verify your email address:\n${verificationUrl}`,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email sent:", info.response);
+
+        res.status(200).json({ msg: "Verification email sent successfully!" });
+    } catch (error) {
+        console.error("Error sending email:", error);
+        res.status(500).json({ msg: "Failed to send verification email" });
     }
 };

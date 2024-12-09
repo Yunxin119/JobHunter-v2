@@ -32,7 +32,14 @@ const UserComments = ({ user, isCurrentUser }) => {
                     <SingleCommentItem key={comment._id} comment={comment} isCurrentUser={isCurrentUser} onCommentDeleted={handleCommentDeleted}/>
                 ))
             ) : (
-                <div className="text-center text-gray-700 text-2xl">No comments found</div>
+                isCurrentUser && userInfo.role === 'user' ? (
+                    <div className='flex flex-col items-start bg-gray-200/45 backdrop-blur-md p-4 rounded-lg w-full'>
+                        <div className="text-center text-gray-700 text-2xl">Verify your email to write comments</div>
+                        <div className='text-gray-500 text-md'>Click edit profile &rarr; Select role to be Superuser &rarr; Verify</div>
+                    </div>
+                ) : (
+                    <div className="text-center text-gray-700 text-2xl">No comments found</div>
+                )
             )}
         </div>
     </div>

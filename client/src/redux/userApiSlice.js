@@ -62,7 +62,22 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 method: 'DELETE'
             }),
             invalidatesTags: ['User']
-        })
+        }),
+        sendVerificationEmail: builder.mutation({
+            query: (body) => ({
+                url: USERS_URL + '/send-verification-email',
+                method: 'POST',
+                body
+            }),
+            invalidatesTags: ['User'],
+        }),
+        verifyUserEmail: builder.mutation({
+            query: ({ token }) => ({
+                url: USERS_URL + `/verify-email?token=${token}`,
+                method: 'GET',
+            }),
+            invalidatesTags: ['User'],
+        }),
     })
 });
 
@@ -73,6 +88,8 @@ export const {
     useGetProfileQuery, 
     useUpdateProfileMutation,
     useGetAllUsersQuery,
-    useDeleteUserMutation
+    useDeleteUserMutation,
+    useSendVerificationEmailMutation,
+    useVerifyUserEmailMutation,
 } = userApiSlice;
 export default userApiSlice;

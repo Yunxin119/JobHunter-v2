@@ -18,6 +18,7 @@ import SearchResults from "./pages/SearchResults";
 import JobDetails from "./pages/JobDetails";
 import PostDetail from './pages/PostDetail';
 import EditPosts from './pages/admin/EditPosts';
+import EmailVerification from './pages/EmailVerification';
 function App() {
   const { userInfo } = useSelector((state) => state.authReducer)
   const isLoggedIn = userInfo !== null;
@@ -40,6 +41,7 @@ function App() {
         <Route path="/search/results" element={<SearchResults />} />
         <Route path="/details/:id" element={<JobDetails />} />
         <Route path="/details/post/:id" element={<PostDetail />} />
+        <Route path="/verify-email" element={<EmailVerification />} />
       </Routes>
       <ToastContainer />
     </div>

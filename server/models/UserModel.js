@@ -40,6 +40,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         enum: ["admin", "user", "superuser"],
         default: "user" 
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -63,7 +67,9 @@ UserSchema.methods.toJSON = function() {
         gender: this.gender,
         profilePic: this.profilePic,
         applications: this.applications,
-        posts: this.posts
+        posts: this.posts,
+        isVerified: this.isVerified,
+        token: this.token
     };
 };
 
