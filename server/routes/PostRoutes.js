@@ -8,7 +8,8 @@ import {
     deletePost,
     getPostsByJob,
     likePost,
-    commentPost
+    commentPost,
+    unlikePost
 } from "../controllers/PostControllers.js";
 import { protectMiddleware } from "../middleware/authMiddleware.js"; // Import `authMiddleware`.
 
@@ -20,6 +21,7 @@ router.route("/:id").get(getPost).put(protectMiddleware, updatePost).delete(prot
 router.route("/user/:id").get(getPostsByUser);
 router.route("/job/:jobId").get(getPostsByJob); // Retrieve all posts based on `jobId`.
 // router.route('/post/:id').get(getPost);// Retrieve a single post based on `postId`.
-router.route('/likePost/:id').post(likePost);// Support this post.
-router.route('/commentPost/:id').post(commentPost);// Support this post.
+router.route('/likePost/:id').post(likePost);
+router.route('/unlikePost/:id').post(unlikePost);
+router.route('/commentPost/:id').post(commentPost);
 export default router;

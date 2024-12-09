@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { BsHandThumbsUp, BsChatDots, BsTrash } from "react-icons/bs";
+import { BsHandThumbsUp, BsHandThumbsUpFill, BsChatDots, BsTrash } from "react-icons/bs";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
-import { useGetPostByIdQuery, useLikePostMutation, useDeletePostMutation } from "../redux/postApiSlice";
+import { useGetPostByIdQuery, useLikePostMutation, useDeletePostMutation, useUnlikePostMutation } from "../redux/postApiSlice";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useAddCommentMutation, useGetCommentsByPostQuery, useDeleteCommentsByPostMutation, useDeleteUserCommentMutation } from "../redux/commentApiSlice";
@@ -17,15 +17,23 @@ const PostDetail = () => {
   // Post and Comments Queries
   const { data, refetch: refetchPost } = useGetPostByIdQuery(id);
   const post = data?.post;
-  console.log(post)
   const postUser = post?.userId
+  const postLikes = post?.likes || [];
   const { data: commentsData, refetch: refetchComments } = useGetCommentsByPostQuery(id);
   const comments = commentsData?.comments || [];
+
   // Mutations
   const [likePost, { isLoading: isLiking }] = useLikePostMutation();
+  const [unlikePost] = useUnlikePostMutation();
   const [addComment, { isLoading: isAddingComment }] = useAddCommentMutation();
   const [deleteComment] = useDeleteUserCommentMutation();
   const [deletePost] = useDeletePostMutation();
+
+  const [isLiked, setIsLiked] = useState(postLikes.includes(userInfo?._id));
+
+  useEffect(() => {
+    setIsLiked(postLikes.includes(userInfo?._id));
+  }, [postLikes, userInfo?._id]);
 
   // Local States
   const [showCommentModal, setShowCommentModal] = useState(false);
@@ -34,16 +42,18 @@ const PostDetail = () => {
   // Handle Like Post
   const handleLikePost = async () => {
     try {
-      await likePost(
-        { postId: id, user: userInfo }
-      ).unwrap();
-      toast.success("Post liked successfully");
+      if (isLiked) {
+        await unlikePost({ postId: id, user: userInfo }).unwrap();
+        setIsLiked(false);
+      } else {
+        await likePost({ postId: id, user: userInfo }).unwrap();
+        setIsLiked(true);
+      }
       refetchPost();
     } catch (error) {
-      console.log(error)
       toast.error(error?.data?.message || "Failed to like post");
     }
-  };
+  }
 
   // Handle Add Comment
   const handleAddComment = async () => {
@@ -119,10 +129,18 @@ const PostDetail = () => {
               <p className="ml-12 sec-text">{post.content}</p>
               {(userInfo?.role !== "user") && (
                 <div className="pl-12 mt-4 flex items-center">
+                  {isLiked ? (
+                  <BsHandThumbsUpFill
+                    className={`cursor-pointer ${isLiking ? "opacity-50" : ""}`}
+                    onClick={handleLikePost}
+                  />
+                  ) : (
                   <BsHandThumbsUp
                     className={`cursor-pointer ${isLiking ? "opacity-50" : ""}`}
                     onClick={handleLikePost}
                   />
+                  )}
+
                   <span className="ml-2">{post.likes?.length || 0}</span>
                   <BsChatDots
                     className="cursor-pointer ml-4"

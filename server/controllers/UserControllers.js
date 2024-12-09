@@ -20,6 +20,7 @@ export const getAllUsers = async (req, res) => {
 export const register = async (req, res) => {
     try {
         const { username, password, confirmPassword, email, gender, role } = req.body;
+        console.log("Logging User's Role: ", role);
 
         if (await User.findOne({ username })) {
             return res.status(400).json({ msg: "User already exists" });
@@ -52,6 +53,7 @@ export const register = async (req, res) => {
         
         res.status(201).json(newUser.toJSON());
     } catch (error) {
+        console.log(error);
         res.status(400).json({ msg: error.message });
     }
 };

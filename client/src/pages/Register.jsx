@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setCredential } from '../redux/authReducer'
 import { useRegisterMutation } from '../redux/userApiSlice'
+import { toast } from 'react-toastify'
 
 const Register = () => {
     const [email, setEmail] = useState('')
@@ -10,12 +11,15 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [username, setUsername] = useState('')
     const [gender, setGender] = useState('')
-    const [role, setRole] = useState('')
+    const [role, setRole] = useState('user')
     const [register, { isLoading, error }] = useRegisterMutation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const submitHandler = async (e) => {
         e.preventDefault();
+        if (!email || !password || !confirmPassword || !username || !role || !gender) {
+            toast.error('Please fill in all fields');
+        }
         const res = await register({ email, password, username, confirmPassword, gender, role }).unwrap();
         console.log(res);
         dispatch(setCredential(res));
@@ -28,7 +32,7 @@ const Register = () => {
                 {/* Title */}
                 <h1 className='text-3xl font-bold text-center text-gray-600'>
                     Register
-                    <span className='text-blue-600'>OfferHunter</span>    
+                    <span className='text-blue-600'>JobHunter</span>    
                 </h1>
                 {/* Form */}
                 <form className='flex flex-col p-2 mt-3' onSubmit={submitHandler}>
@@ -97,7 +101,9 @@ const Register = () => {
                         className="input"
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
+                        required
                     >
+                        <option value="" disabled>Select Role</option>
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
                         <option value="superuser">Superuser</option>
