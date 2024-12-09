@@ -35,7 +35,7 @@ const JobSearch = () => {
             onChange={(e) => setLocation(e.target.value)}
             className="border p-2 mr-2 input"
           />
-          <button onClick={handleSearch} className="bg-blue-500 text-white p-2">
+          <button onClick={handleSearch} className="btn-primary">
             Search
           </button>
         </div>

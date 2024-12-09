@@ -12,6 +12,7 @@ import CommentRoutes from './routes/CommentRoutes.js';
 // MARK: import database connection
 import connectDB from './db/db.js';
 import cors from 'cors';
+import path from 'path';
 
 import cookieParser from 'cookie-parser';
 
@@ -20,9 +21,9 @@ const PORT = process.env.PORT || 5001;
 
 // MARK: CORS
 const corsOptions = {
-    origin: 'http://localhost:3000', // Specify frontend URL
-    credentials: true,               // Allow cookies to be sent with requests
-    optionsSuccessStatus: 200,       // Some legacy browsers require this status
+    origin: true,
+    credentials: true,
+    optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
 
@@ -38,6 +39,18 @@ app.use('/api/posts', PostRoutes);
 app.use('/api/jobs', JobRoutes);
 app.use('/api/comments', CommentRoutes);
 
+const __dir = path.resolve();
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dir, 'client/build')));
+
+    app.get('*', (req, res) =>
+        res.sendFile(path.resolve(__dir, 'client', 'build', 'index.html'))
+    );
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is running...')
+    })
+}
 
 app.listen(PORT, () => {
     connectDB();

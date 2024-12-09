@@ -58,9 +58,10 @@ const postApiSlice = apiSlice.injectEndpoints({
             keepUnusedDataFor: 5,
         }),
         likePost: builder.mutation({
-            query: (id) => ({
-                url: Post_URL + '/likePost/'+id,
+            query: (body) => ({
+                url: Post_URL + '/likePost/'+body.postId,
                 method: 'POST',
+                body
             }),
             invalidatesTags: ['Post']
         }),

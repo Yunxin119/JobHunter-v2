@@ -97,12 +97,10 @@ const Register = () => {
                         className="input"
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
-                        required
                     >
-                        <option value="" disabled>Select Role</option>
-                        <option value="user" selected>user</option>
-                        <option value="superuser">superuser</option>
-                        <option value="admin">admin</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="superuser">Superuser</option>
                     </select>
                     {/* Form: Register direction */}
                     <div className='p-2 items-center justify-center'>

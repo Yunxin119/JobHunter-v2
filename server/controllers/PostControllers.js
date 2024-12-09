@@ -40,21 +40,18 @@ export const getPost = async (req, res) => {
 export const createPost = async (req, res) => {
     const { title, content, jobId, userId } = req.body;
 
-    // 检查必填字段
     if (!jobId || !userId || !content) {
         return res.status(400).json({ msg: "Job ID, User ID, and content are required." });
     }
 
     try {
-        // 创建帖子
         const post = await Post.create({
             title,
             content,
-            userId, // 从请求体中获取用户 ID
+            userId,
             jobId,
         });
 
-        // 更新用户的帖子列表
         const user = await User.findById(userId);
         if (user) {
             user.posts.push(post._id);
@@ -112,9 +109,9 @@ export const deletePost = async (req, res) => {
 
 // Function to like a post
 export const likePost = async (req, res) => {
-    const {user} = req.body;
+    const { user, postId } = req.body;
     try {
-        const post = await Post.findById(req.params.id);
+        const post = await Post.findById(postId);
         if (!post) {
             return res.status(404).json({ msg: "Post not found" });
         }
