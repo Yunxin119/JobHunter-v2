@@ -183,43 +183,48 @@ const JobDetails = () => {
         
 
         {/* Related Posts */}
-        <h2 className="text-xl font-bold mt-8">Related Posts</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {posts.map((post) => (
-            <SinglePostItem
-              key={post._id}
-              post={post}
-              isCurrentUser={currentUser && currentUser._id === post.userId._id} 
-              onPostDeleted={handlePostDeleted}
-            />
-          ))}
-        </div>
-
-        {/* Add a Post */}
-        <div className="mt-4">
-          <h3 className="text-lg font-bold">Add a Post</h3>
-          <div className="flex flex-col gap-2 items-center justify-center">
-            <input
-              type="text"
-              placeholder="Title"
-              value={newPostTitle}
-              onChange={(e) => setNewPostTitle(e.target.value)}
-              className="textfield"
-            />
-            <textarea
-              placeholder="Write a post..."
-              value={newPost}
-              onChange={(e) => setNewPost(e.target.value)}
-              rows={5}
-              className="textfield resize-none"
-            ></textarea>
-            <div className="flex flex-row gap-2">
-              <button onClick={(e) => setNewPost("")} className="btn-secondary mt-2">Clear</button>
-              <button onClick={handleAddPost} className="btn-primary mt-2"> Post </button>
+        {(currentUser) &&(
+          <div>
+            <h2 className="text-xl font-bold mt-8">Related Posts</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {posts.map((post) => (
+                <SinglePostItem
+                  key={post._id}
+                  post={post}
+                  isCurrentUser={currentUser && currentUser._id === post.userId._id} 
+                  onPostDeleted={handlePostDeleted}
+                />
+              ))}
             </div>
           </div>
+        )}
 
-        </div>
+        {/* Add a Post */}
+        {(currentUser && currentUser.role !== "user") && (
+          <div className="mt-4">
+            <h3 className="text-lg font-bold">Add a Post</h3>
+            <div className="flex flex-col gap-2 items-center justify-center">
+              <input
+                type="text"
+                placeholder="Title"
+                value={newPostTitle}
+                onChange={(e) => setNewPostTitle(e.target.value)}
+                className="textfield"
+              />
+              <textarea
+                placeholder="Write a post..."
+                value={newPost}
+                onChange={(e) => setNewPost(e.target.value)}
+                rows={5}
+                className="textfield resize-none"
+              ></textarea>
+              <div className="flex flex-row gap-2">
+                <button onClick={(e) => setNewPost("")} className="btn-secondary mt-2">Clear</button>
+                <button onClick={handleAddPost} className="btn-primary mt-2"> Post </button>
+              </div>
+            </div>
+          </div>  
+        )}
       </div>
     </div>
 
