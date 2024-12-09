@@ -117,17 +117,19 @@ const PostDetail = () => {
               </div>
               <h1 className="ml-12 text-lg font-bold prime-text">{post.title}</h1>
               <p className="ml-12 sec-text">{post.content}</p>
-              <div className="pl-12 mt-4 flex items-center">
-                <BsHandThumbsUp
-                  className={`cursor-pointer ${isLiking ? "opacity-50" : ""}`}
-                  onClick={handleLikePost}
-                />
-                <span className="ml-2">{post.likes?.length || 0}</span>
-                <BsChatDots
-                  className="cursor-pointer ml-4"
-                  onClick={() => setShowCommentModal(true)}
-                />
-              </div>
+              {(userInfo?.role !== "user") && (
+                <div className="pl-12 mt-4 flex items-center">
+                  <BsHandThumbsUp
+                    className={`cursor-pointer ${isLiking ? "opacity-50" : ""}`}
+                    onClick={handleLikePost}
+                  />
+                  <span className="ml-2">{post.likes?.length || 0}</span>
+                  <BsChatDots
+                    className="cursor-pointer ml-4"
+                    onClick={() => setShowCommentModal(true)}
+                  />
+                </div>
+              )}
             </>
           )}
         {comments.map((comment) => (
