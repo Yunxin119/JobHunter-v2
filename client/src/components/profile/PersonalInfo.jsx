@@ -3,14 +3,14 @@ import { FaCheck } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../redux/tempUserReducer';
-import { useUpdateProfileMutation, useSendVerificationEmailMutation } from '../../redux/userApiSlice';
+import { useGetProfileQuery, useUpdateProfileMutation, useSendVerificationEmailMutation } from '../../redux/userApiSlice';
 import { toast } from 'react-toastify';
 import { setCredential } from '../../redux/authReducer';
 
 export default function PersonalInfo({ isCurrentUser, user }) {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.authReducer.userInfo);
-    console.log(currentUser);
+    const { data: profileUser, refetch } = useGetProfileQuery(user._id);
     const [updateProfile, { isLoading }] = useUpdateProfileMutation();
     const [sendVerificationEmail] = useSendVerificationEmailMutation();
     const [username, setUsername] = useState(user.username);
@@ -21,15 +21,17 @@ export default function PersonalInfo({ isCurrentUser, user }) {
     const [role, setRole] = useState(user.role || "user");
     const [editProfile, setEditProfile] = useState(false);
     const [isEmailSent, setIsEmailSent] = useState(false);
-    const [showVerification, setShowVerification] = useState(isCurrentUser && currentUser?.role === "user" && role === "superuser" && currentUser?.isVerfified === false);
-    const [showEmailVerified, setShowEmailVerified] = useState(isCurrentUser && currentUser?.isVerified);
+    const [showVerification, setShowVerification] = useState(isCurrentUser && currentUser?.role === "user" && role === "superuser" && profileUser?.isVerfified === false);
+    const [showEmailVerified, setShowEmailVerified] = useState(isCurrentUser && profileUser?.isVerified);
     
     useEffect(() => {
         setShowVerification(isCurrentUser && !currentUser?.isVerified && role === "superuser" & currentUser?.role === "user");
     }, [role, currentUser, isCurrentUser]);
+
     useEffect(() => {
-        setShowEmailVerified(isCurrentUser && currentUser?.isVerified);
-    }, [currentUser]);
+        refetch();
+        setShowEmailVerified(isCurrentUser && profileUser?.isVerified);
+    }, []);
 
     const handleEditProfile = async () => {
         if (!editProfile) {

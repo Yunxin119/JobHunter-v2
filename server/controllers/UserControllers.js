@@ -167,17 +167,21 @@ export const deleteUser = async (req, res) => {
 
 // Email verification
 export const verifyEmail = async (req, res) => {
+    console.log("Verifying email...");
     try {
         const { token } = req.query;
         if (!token) return res.status(400).json({ msg: "Token is required" });
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("Decoded token:", decoded);
         const user = await User.findById(decoded.id);
         if (!user) return res.status(404).json({ msg: "User not found" });
 
         user.isVerified = true;
         user.role = "superuser";
         await user.save();
+
+        console.log("User updated successfully:", user);
 
         res.status(200).json({ msg: "Email verified successfully. You are now a superuser." });
     } catch (error) {
@@ -196,6 +200,8 @@ export const sendVerificationEmail = async (req, res) => {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
         const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+        console.log("Sending email to:", user.email);
+        console.log("Verification URL:", verificationUrl);
 
         const transporter = nodemailer.createTransport({
             service: "gmail",
