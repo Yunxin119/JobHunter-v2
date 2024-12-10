@@ -8,6 +8,6 @@ router.route('/login').post(login)
 router.route('/logout').post(logout)
 router.route('/:id').get(getUserProfile).delete(deleteUser).put(editProfile)
 router.route("/send-verification-email").post(sendVerificationEmail);
-router.route("/verify-email").get(verifyEmail);
+router.route("/verify/verify-email").get(verifyEmail);
 
 export default router;

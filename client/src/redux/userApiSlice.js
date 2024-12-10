@@ -73,7 +73,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         }),
         verifyUserEmail: builder.mutation({
             query: ({ token }) => ({
-                url: USERS_URL + `/verify-email?token=${token}`,
+                url: USERS_URL + `/verify/verify-email?token=${token}`,
                 method: 'GET',
             }),
             invalidatesTags: ['User'],
