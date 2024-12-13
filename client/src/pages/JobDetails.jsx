@@ -111,6 +111,7 @@ const JobDetails = () => {
             status: "Submitted",
             city: jobDetails.location.display_name,
             link: jobDetails.redirect_url,
+            imageUrl: jobLogo,
             applyDate: new Date().toLocaleDateString('en-US'),
             updatedAt: new Date().toLocaleDateString('en-US'),
             user: currentUser._id,

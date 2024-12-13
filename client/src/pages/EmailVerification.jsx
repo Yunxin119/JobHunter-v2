@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useVerifyUserEmailMutation } from '../redux/userApiSlice';
 import { toast } from 'react-toastify';
+import { logout } from '../redux/authReducer';
+import { useLogoutMutation } from '../redux/userApiSlice';
+import { useDispatch } from 'react-redux';
 
 const EmailVerification = () => {
     const [searchParams] = useSearchParams();
@@ -9,6 +12,8 @@ const EmailVerification = () => {
     const [verifyUserEmail] = useVerifyUserEmailMutation();
     const [verificationStatus, setVerificationStatus] = useState('loading'); // 'loading', 'success', 'error'
     console.log("Verification token:", searchParams.get('token'));
+    const [logoutUser, {isLoading}] = useLogoutMutation();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const verifyEmail = async () => {
@@ -24,6 +29,8 @@ const EmailVerification = () => {
                 await verifyUserEmail({ token }).unwrap();
                 setVerificationStatus('success');
                 toast.success('Email verified successfully.');
+                await logoutUser();
+                dispatch(logout())
             } catch (error) {
                 console.error('Error during verification:', error);
                 setVerificationStatus('error');
@@ -55,8 +62,8 @@ const EmailVerification = () => {
                             <p className="mt-6 text-pretty text-lg font-medium text-white/70 sm:text-xl/8">
                                 You are now able to share posts and add comments.
                             </p>
-                            <Link to="/profile" className="mt-6 text-pretty text-lg font-medium text-white/70 sm:text-xl/8">
-                                Go to your profile
+                            <Link to="/login" className="mt-6 text-pretty text-lg font-medium text-white/70 sm:text-xl/8">
+                                Login to your account
                             </Link>
                         </>
                     )}

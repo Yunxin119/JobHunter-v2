@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { toast } from "react-toastify";
 
 const JobSearch = () => {
   const [query, setQuery] = useState("");
@@ -11,7 +12,7 @@ const JobSearch = () => {
     if (query.trim() && location.trim()) {
       navigate(`/search/results?query=${query.trim()}&location=${location.trim()}`);
     } else {
-      alert("Please enter both job title and location!");
+      toast.error("Please enter both job title and location!");
     }
   };
 
